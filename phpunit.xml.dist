@@ -6,6 +6,10 @@
     backupGlobals="true"
     stderr="true"
     colors="true">
+    <php>
+        <const name="TESTS_ZEND_LOCALE_FORMAT_SETLOCALE" value="false" />
+        <const name="TESTS_ZEND_LOCALE_BCMATH_ENABLED" value="true" />
+    </php>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>

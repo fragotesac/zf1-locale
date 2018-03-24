@@ -895,7 +895,7 @@ class Zend_LocaleTest extends PHPUnit\Framework\TestCase
         }
 
         $dir = new DirectoryIterator(
-            dirname(__FILE__) . '/../../library/Zend/Locale/Data'
+            dirname(__FILE__) . '/../../src/Zend/Locale/Data'
         );
         $skip = array(
             'characters.xml',

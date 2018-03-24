@@ -88,19 +88,18 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testNoType()
     {
-        try {
-            $value = Zend_Locale_Data::getContent('de','');
-            $this->fail('content should throw an exception');
-        } catch (Zend_Locale_Exception $e) {
-            // success
-        }
+        $this->expectException(Zend_Locale_Exception::class);
+        $value = Zend_Locale_Data::getContent('de','');
+    }
 
-        try {
-            $value = Zend_Locale_Data::getContent('de','xxxxxxx');
-            $this->fail('content should throw an exception');
-        } catch (Zend_Locale_Exception $e) {
-            // success
-        }
+    /**
+     * test for reading without type
+     * expected empty array
+     */
+    public function testNoType2()
+    {
+        $this->expectException(Zend_Locale_Exception::class);
+        $value = Zend_Locale_Data::getContent('de','xxxxxxx');
     }
 
 
@@ -7232,6 +7231,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
 
     /**
      * @group GH-465
+     * @doesNotPerformAssertions
      */
     public function testCreateValidCacheIdsInGetContentMethod()
     {
@@ -7244,6 +7244,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
 
     /**
      * @group GH-465
+     * @doesNotPerformAssertions
      */
     public function testCreateValidCacheIdsInGetListMethod()
     {
