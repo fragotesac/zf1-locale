@@ -31,7 +31,6 @@
  */
 class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
 {
-
     private $_cache = null;
 
     public function setUp()
@@ -41,9 +40,12 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
             setlocale(LC_ALL, TESTS_ZEND_LOCALE_FORMAT_SETLOCALE);
         }
 
-        $this->_cache = Zend_Cache::factory('Core', 'File',
-                 array('lifetime' => 1, 'automatic_serialization' => true),
-                 array('cache_dir' => dirname(__FILE__) . '/../_files/'));
+        $this->_cache = Zend_Cache::factory(
+            'Core',
+            'File',
+                 array('lifetime'  => 1, 'automatic_serialization' => true),
+                 array('cache_dir' => dirname(__FILE__) . '/../_files/')
+        );
         Zend_Locale_Data::setCache($this->_cache);
     }
 
@@ -71,7 +73,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertInternalType('array', Zend_Locale_Data::getList(null, 'language'));
 
         try {
-            $value = Zend_Locale_Data::getList('nolocale','language');
+            $value = Zend_Locale_Data::getList('nolocale', 'language');
             $this->fail('locale should throw exception');
         } catch (Zend_Locale_Exception $e) {
             // success
@@ -89,7 +91,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testNoType()
     {
         $this->expectException(Zend_Locale_Exception::class);
-        $value = Zend_Locale_Data::getContent('de','');
+        $value = Zend_Locale_Data::getContent('de', '');
     }
 
     /**
@@ -99,7 +101,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testNoType2()
     {
         $this->expectException(Zend_Locale_Exception::class);
-        $value = Zend_Locale_Data::getContent('de','xxxxxxx');
+        $value = Zend_Locale_Data::getContent('de', 'xxxxxxx');
     }
 
 
@@ -109,8 +111,8 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testLanguage()
     {
-        $data = Zend_Locale_Data::getList('de','language');
-        $this->assertEquals('Deutsch',  $data['de']);
+        $data = Zend_Locale_Data::getList('de', 'language');
+        $this->assertEquals('Deutsch', $data['de']);
         $this->assertEquals('Englisch', $data['en']);
 
         $value = Zend_Locale_Data::getContent('de', 'language', 'de');
@@ -124,7 +126,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testScript()
     {
         $data = Zend_Locale_Data::getList('de_AT', 'script');
-        $this->assertEquals('Arabisch',   $data['Arab']);
+        $this->assertEquals('Arabisch', $data['Arab']);
         $this->assertEquals('Lateinisch', $data['Latn']);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'script', 'Arab');
@@ -153,7 +155,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     {
         $data = Zend_Locale_Data::getList('de_AT', 'variant');
         $this->assertEquals('Boontling', $data['BOONT']);
-        $this->assertEquals('Saho',      $data['SAAHO']);
+        $this->assertEquals('Saho', $data['SAAHO']);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'variant', 'POSIX');
         $this->assertEquals('Posix', $value);
@@ -166,7 +168,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testKey()
     {
         $data = Zend_Locale_Data::getList('de_AT', 'key');
-        $this->assertEquals('Kalender',   $data['calendar']);
+        $this->assertEquals('Kalender', $data['calendar']);
         $this->assertEquals('Sortierung', $data['collation']);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'key', 'collation');
@@ -181,11 +183,11 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     {
         $data = Zend_Locale_Data::getList('de_AT', 'type');
         $this->assertEquals('Chinesischer Kalender', $data['chinese']);
-        $this->assertEquals('Strichfolge',           $data['stroke']);
+        $this->assertEquals('Strichfolge', $data['stroke']);
 
         $data = Zend_Locale_Data::getList('de_AT', 'type', 'calendar');
         $this->assertEquals('Chinesischer Kalender', $data['chinese']);
-        $this->assertEquals('Japanischer Kalender',  $data['japanese']);
+        $this->assertEquals('Japanischer Kalender', $data['japanese']);
 
         $value = Zend_Locale_Data::getList('de_AT', 'type', 'chinese');
         $this->assertEquals('Chinesischer Kalender', $value['chinese']);
@@ -198,8 +200,8 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testLayout()
     {
         $layout = Zend_Locale_Data::getList('ar', 'layout');
-        $this->assertEquals("right-to-left", $layout['characterOrder']);
-        $this->assertEquals("top-to-bottom", $layout['lineOrder']);
+        $this->assertEquals('right-to-left', $layout['characterOrder']);
+        $this->assertEquals('top-to-bottom', $layout['lineOrder']);
     }
 
     /**
@@ -209,11 +211,11 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testContextTransform()
     {
         $contexttransform = Zend_Locale_Data::getList('uk', 'contexttransform', 'uiListOrMenu');
-        $result = array(
-            'languages' => 'titlecase-firstword',
-            'day-format-except-narrow' => 'titlecase-firstword',
-            'day-standalone-except-narrow' => 'titlecase-firstword',
-            'month-format-except-narrow' => 'titlecase-firstword',
+        $result           = array(
+            'languages'                      => 'titlecase-firstword',
+            'day-format-except-narrow'       => 'titlecase-firstword',
+            'day-standalone-except-narrow'   => 'titlecase-firstword',
+            'month-format-except-narrow'     => 'titlecase-firstword',
             'month-standalone-except-narrow' => 'titlecase-firstword',
         );
         $this->assertEquals($result, $contexttransform);
@@ -226,8 +228,8 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testCharacters()
     {
         $char = Zend_Locale_Data::getList('de', 'characters');
-        $this->assertEquals("[a ä b c d e f g h i j k l m n o ö p q r s ß t u ü v w x y z]", $char['characters']);
-        $this->assertEquals("[á à ă â å ã ā æ ç é è ĕ ê ë ē ğ í ì ĭ î ï İ ī ı ñ ó ò ŏ ô ø ō œ ş ú ù ŭ û ū ÿ]", $char['auxiliary']);
+        $this->assertEquals('[a ä b c d e f g h i j k l m n o ö p q r s ß t u ü v w x y z]', $char['characters']);
+        $this->assertEquals('[á à ă â å ã ā æ ç é è ĕ ê ë ē ğ í ì ĭ î ï İ ī ı ñ ó ò ŏ ô ø ō œ ş ú ù ŭ û ū ÿ]', $char['auxiliary']);
         // $this->assertEquals("[a-z]", $char['currencySymbol']);
     }
 
@@ -238,10 +240,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testDelimiters()
     {
         $quote = Zend_Locale_Data::getList('de', 'delimiters');
-        $this->assertEquals("„", $quote['quoteStart']);
-        $this->assertEquals("“", $quote['quoteEnd']);
-        $this->assertEquals("‚", $quote['quoteStartAlt']);
-        $this->assertEquals("‘", $quote['quoteEndAlt']);
+        $this->assertEquals('„', $quote['quoteStart']);
+        $this->assertEquals('“', $quote['quoteEnd']);
+        $this->assertEquals('‚', $quote['quoteStartAlt']);
+        $this->assertEquals('‘', $quote['quoteEndAlt']);
     }
 
     /**
@@ -251,10 +253,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testMeasurement()
     {
         $measure = Zend_Locale_Data::getList('de', 'measurement');
-        $this->assertEquals("001", $measure['metric']);
-        $this->assertEquals("LR MM US",  $measure['US']);
-        $this->assertEquals("001", $measure['A4']);
-        $this->assertEquals("BZ CA CL CO CR GT MX NI PA PH PR SV US VE",  $measure['US-Letter']);
+        $this->assertEquals('001', $measure['metric']);
+        $this->assertEquals('LR MM US', $measure['US']);
+        $this->assertEquals('001', $measure['A4']);
+        $this->assertEquals('BZ CA CL CO CR GT MX NI PA PH PR SV US VE', $measure['US-Letter']);
     }
 
     /**
@@ -264,10 +266,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testDefaultCalendar()
     {
         $date = Zend_Locale_Data::getContent('th_TH', 'defaultcalendar');
-        $this->assertEquals("buddhist", $date);
+        $this->assertEquals('buddhist', $date);
 
         $date = Zend_Locale_Data::getContent('de_AT', 'defaultcalendar');
-        $this->assertEquals("gregorian", $date);
+        $this->assertEquals('gregorian', $date);
     }
 
     /**
@@ -277,10 +279,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testDefaultMonthContext()
     {
         $date = Zend_Locale_Data::getContent('de_AT', 'monthcontext');
-        $this->assertEquals("format", $date);
+        $this->assertEquals('format', $date);
 
         $date = Zend_Locale_Data::getContent('de_AT', 'monthcontext', 'islamic');
-        $this->assertEquals("format", $date);
+        $this->assertEquals('format', $date);
     }
 
     /**
@@ -290,10 +292,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testDefaultMonth()
     {
         $date = Zend_Locale_Data::getContent('de_AT', 'defaultmonth');
-        $this->assertEquals("wide", $date);
+        $this->assertEquals('wide', $date);
 
         $date = Zend_Locale_Data::getContent('de_AT', 'defaultmonth', 'islamic');
-        $this->assertEquals("wide", $date);
+        $this->assertEquals('wide', $date);
     }
 
     /**
@@ -304,9 +306,9 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     {
         $date   = Zend_Locale_Data::getList('de_AT', 'months');
         $result = array(
-            'context'     => 'format',
-            'default'     => 'wide',
-            'format'      =>
+            'context' => 'format',
+            'default' => 'wide',
+            'format'  =>
                 array(
                     'abbreviated' =>
                         array(
@@ -323,7 +325,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                             11 => 'Nov.',
                             12 => 'Dez.',
                         ),
-                    'narrow'      =>
+                    'narrow' =>
                         array(
                             1  => 'J',
                             2  => 'F',
@@ -338,7 +340,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                             11 => 'N',
                             12 => 'D',
                         ),
-                    'wide'        =>
+                    'wide' =>
                         array(
                             1  => 'Jänner',
                             2  => 'Februar',
@@ -371,7 +373,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                             11 => 'Nov',
                             12 => 'Dez',
                         ),
-                    'narrow'      =>
+                    'narrow' =>
                         array(
                             1  => 'J',
                             2  => 'F',
@@ -386,7 +388,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                             11 => 'N',
                             12 => 'D',
                         ),
-                    'wide'        =>
+                    'wide' =>
                         array(
                             1  => 'Jänner',
                             2  => 'Februar',
@@ -407,25 +409,25 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
 
         $date   = Zend_Locale_Data::getList('de_AT', 'months', 'islamic');
         $result = array(
-            "context"     => "format",
-            "default"     => "wide",
-            "format"      =>
+            'context' => 'format',
+            'default' => 'wide',
+            'format'  =>
                 array(
-                    "abbreviated" => array(
-                        1  => "Muh.",
-                        2  => "Saf.",
-                        3  => "Rab. I",
-                        4  => "Rab. II",
-                        5  => "Jum. I",
-                        6  => "Jum. II",
-                        7  => "Raj.",
-                        8  => "Sha.",
-                        9  => "Ram.",
-                        10 => "Shaw.",
-                        11 => "Dhuʻl-Q.",
-                        12 => "Dhuʻl-H."
+                    'abbreviated' => array(
+                        1  => 'Muh.',
+                        2  => 'Saf.',
+                        3  => 'Rab. I',
+                        4  => 'Rab. II',
+                        5  => 'Jum. I',
+                        6  => 'Jum. II',
+                        7  => 'Raj.',
+                        8  => 'Sha.',
+                        9  => 'Ram.',
+                        10 => 'Shaw.',
+                        11 => 'Dhuʻl-Q.',
+                        12 => 'Dhuʻl-H.'
                     ),
-                    "narrow"      => array(
+                    'narrow' => array(
                         1  => '1',
                         2  => '2',
                         3  => '3',
@@ -439,37 +441,37 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                         11 => '11',
                         12 => '12'
                     ),
-                    "wide"        => array(
-                        1  => "Muharram",
-                        2  => "Safar",
-                        3  => "Rabiʻ I",
-                        4  => "Rabiʻ II",
-                        5  => "Jumada I",
-                        6  => "Jumada II",
-                        7  => "Rajab",
-                        8  => "Shaʻban",
-                        9  => "Ramadan",
-                        10 => "Shawwal",
-                        11 => "Dhuʻl-Qiʻdah",
-                        12 => "Dhuʻl-Hijjah"
+                    'wide' => array(
+                        1  => 'Muharram',
+                        2  => 'Safar',
+                        3  => 'Rabiʻ I',
+                        4  => 'Rabiʻ II',
+                        5  => 'Jumada I',
+                        6  => 'Jumada II',
+                        7  => 'Rajab',
+                        8  => 'Shaʻban',
+                        9  => 'Ramadan',
+                        10 => 'Shawwal',
+                        11 => 'Dhuʻl-Qiʻdah',
+                        12 => 'Dhuʻl-Hijjah'
                     )
                 ),
-            "stand-alone" => array(
-                "abbreviated" => array(
-                    1  => "Muh.",
-                    2  => "Saf.",
-                    3  => "Rab. I",
-                    4  => "Rab. II",
-                    5  => "Jum. I",
-                    6  => "Jum. II",
-                    7  => "Raj.",
-                    8  => "Sha.",
-                    9  => "Ram.",
-                    10 => "Shaw.",
-                    11 => "Dhuʻl-Q.",
-                    12 => "Dhuʻl-H."
+            'stand-alone' => array(
+                'abbreviated' => array(
+                    1  => 'Muh.',
+                    2  => 'Saf.',
+                    3  => 'Rab. I',
+                    4  => 'Rab. II',
+                    5  => 'Jum. I',
+                    6  => 'Jum. II',
+                    7  => 'Raj.',
+                    8  => 'Sha.',
+                    9  => 'Ram.',
+                    10 => 'Shaw.',
+                    11 => 'Dhuʻl-Q.',
+                    12 => 'Dhuʻl-H.'
                 ),
-                "narrow"      => array(
+                'narrow' => array(
                     1  => '1',
                     2  => '2',
                     3  => '3',
@@ -483,19 +485,19 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                     11 => '11',
                     12 => '12'
                 ),
-                "wide"        => array(
-                    1  => "Muharram",
-                    2  => "Safar",
-                    3  => "Rabiʻ I",
-                    4  => "Rabiʻ II",
-                    5  => "Jumada I",
-                    6  => "Jumada II",
-                    7  => "Rajab",
-                    8  => "Shaʻban",
-                    9  => "Ramadan",
-                    10 => "Shawwal",
-                    11 => "Dhuʻl-Qiʻdah",
-                    12 => "Dhuʻl-Hijjah"
+                'wide' => array(
+                    1  => 'Muharram',
+                    2  => 'Safar',
+                    3  => 'Rabiʻ I',
+                    4  => 'Rabiʻ II',
+                    5  => 'Jumada I',
+                    6  => 'Jumada II',
+                    7  => 'Rajab',
+                    8  => 'Shaʻban',
+                    9  => 'Ramadan',
+                    10 => 'Shawwal',
+                    11 => 'Dhuʻl-Qiʻdah',
+                    12 => 'Dhuʻl-Hijjah'
                 )
             )
         );
@@ -504,18 +506,18 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $date = Zend_Locale_Data::getList('de_AT', 'month');
         $this->assertEquals(
             array(
-                1  => "Jänner",
-                2  => "Februar",
-                3  => "März",
-                4  => "April",
-                5  => "Mai",
-                6  => "Juni",
-                7  => "Juli",
-                8  => "August",
-                9  => "September",
-                10 => "Oktober",
-                11 => "November",
-                12 => "Dezember"
+                1  => 'Jänner',
+                2  => 'Februar',
+                3  => 'März',
+                4  => 'April',
+                5  => 'Mai',
+                6  => 'Juni',
+                7  => 'Juli',
+                8  => 'August',
+                9  => 'September',
+                10 => 'Oktober',
+                11 => 'November',
+                12 => 'Dezember'
             ),
             $date
         );
@@ -523,18 +525,18 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $date = Zend_Locale_Data::getList('de_AT', 'month', array('gregorian', 'format', 'wide'));
         $this->assertEquals(
             array(
-                1  => "Jänner",
-                2  => "Februar",
-                3  => "März",
-                4  => "April",
-                5  => "Mai",
-                6  => "Juni",
-                7  => "Juli",
-                8  => "August",
-                9  => "September",
-                10 => "Oktober",
-                11 => "November",
-                12 => "Dezember"
+                1  => 'Jänner',
+                2  => 'Februar',
+                3  => 'März',
+                4  => 'April',
+                5  => 'Mai',
+                6  => 'Juni',
+                7  => 'Juli',
+                8  => 'August',
+                9  => 'September',
+                10 => 'Oktober',
+                11 => 'November',
+                12 => 'Dezember'
             ),
             $date
         );
@@ -546,7 +548,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals('Dezember', $value);
 
         $value = Zend_Locale_Data::getContent('ar', 'month', array('islamic', 'format', 'wide', 1));
-        $this->assertEquals("محرم", $value);
+        $this->assertEquals('محرم', $value);
     }
 
     /**
@@ -556,10 +558,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testDefaultDayContext()
     {
         $date = Zend_Locale_Data::getContent('de_AT', 'daycontext');
-        $this->assertEquals("format", $date);
+        $this->assertEquals('format', $date);
 
         $date = Zend_Locale_Data::getContent('de_AT', 'daycontext', 'islamic');
-        $this->assertEquals("format", $date);
+        $this->assertEquals('format', $date);
     }
 
     /**
@@ -569,10 +571,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testDefaultDay()
     {
         $date = Zend_Locale_Data::getContent('de_AT', 'defaultday');
-        $this->assertEquals("wide", $date);
+        $this->assertEquals('wide', $date);
 
         $date = Zend_Locale_Data::getContent('de_AT', 'defaultday', 'islamic');
-        $this->assertEquals("wide", $date);
+        $this->assertEquals('wide', $date);
     }
 
     /**
@@ -581,49 +583,49 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testDay()
     {
-        $date = Zend_Locale_Data::getList('de_AT', 'days');
-        $result = array("context" => "format", "default" => "wide", "format" =>
-            array("abbreviated" => array("sun" => "So.", "mon" => "Mo.", "tue" => "Di.", "wed" => "Mi.",
-                      "thu" => "Do.", "fri" => "Fr.", "sat" => "Sa."),
-                  "narrow" => array("sun" => "S", "mon" => "M", "tue" => "D", "wed" => "M",
-                      "thu" => "D", "fri" => "F", "sat" => "S"),
-                  "wide" => array("sun" => "Sonntag", "mon" => "Montag", "tue" => "Dienstag",
-                      "wed" => "Mittwoch", "thu" => "Donnerstag", "fri" => "Freitag", "sat" => "Samstag")
+        $date   = Zend_Locale_Data::getList('de_AT', 'days');
+        $result = array('context' => 'format', 'default' => 'wide', 'format' =>
+            array('abbreviated' => array('sun' => 'So.', 'mon' => 'Mo.', 'tue' => 'Di.', 'wed' => 'Mi.',
+                      'thu'                    => 'Do.', 'fri' => 'Fr.', 'sat' => 'Sa.'),
+                  'narrow' => array('sun'      => 'S', 'mon' => 'M', 'tue' => 'D', 'wed' => 'M',
+                      'thu'                    => 'D', 'fri' => 'F', 'sat' => 'S'),
+                  'wide' => array('sun'        => 'Sonntag', 'mon' => 'Montag', 'tue' => 'Dienstag',
+                      'wed'                    => 'Mittwoch', 'thu' => 'Donnerstag', 'fri' => 'Freitag', 'sat' => 'Samstag')
             ),
-            "stand-alone" => array("abbreviated" => array("sun" => "So", "mon" => "Mo", "tue" => "Di", "wed" => "Mi",
-                      "thu" => "Do", "fri" => "Fr", "sat" => "Sa"),
-                  "narrow" => array("sun" => "S", "mon" => "M", "tue" => "D", "wed" => "M",
-                      "thu" => "D", "fri" => "F", "sat" => "S"),
-                  "wide" => array("sun" => "Sonntag", "mon" => "Montag", "tue" => "Dienstag", "wed" => "Mittwoch",
-                      "thu" => "Donnerstag", "fri" => "Freitag", "sat" => "Samstag")
+            'stand-alone' => array('abbreviated' => array('sun' => 'So', 'mon' => 'Mo', 'tue' => 'Di', 'wed' => 'Mi',
+                      'thu'                                     => 'Do', 'fri' => 'Fr', 'sat' => 'Sa'),
+                  'narrow' => array('sun'                       => 'S', 'mon' => 'M', 'tue' => 'D', 'wed' => 'M',
+                      'thu'                                     => 'D', 'fri' => 'F', 'sat' => 'S'),
+                  'wide' => array('sun'                         => 'Sonntag', 'mon' => 'Montag', 'tue' => 'Dienstag', 'wed' => 'Mittwoch',
+                      'thu'                                     => 'Donnerstag', 'fri' => 'Freitag', 'sat' => 'Samstag')
             ));
         $this->assertEquals($result, $date);
 
-        $date = Zend_Locale_Data::getList('de_AT', 'days', 'islamic');
-        $result = array("context" => "format", "default" => "wide", "format" =>
-            array("abbreviated" => array("sun" => "Sun", "mon" => "Mon", "tue" => "Tue", "wed" => "Wed",
-                      "thu" => "Thu", "fri" => "Fri", "sat" => "Sat"),
-                  "narrow" => array("sun" => "S", "mon" => "M", "tue" => "T", "wed" => "W",
-                      "thu" => "T", "fri" => "F", "sat" => "S"),
-                  "wide" => array("sun" => "Sun", "mon" => "Mon", "tue" => "Tue", "wed" => "Wed",
-                      "thu" => "Thu", "fri" => "Fri", "sat" => "Sat")
+        $date   = Zend_Locale_Data::getList('de_AT', 'days', 'islamic');
+        $result = array('context' => 'format', 'default' => 'wide', 'format' =>
+            array('abbreviated' => array('sun' => 'Sun', 'mon' => 'Mon', 'tue' => 'Tue', 'wed' => 'Wed',
+                      'thu'                    => 'Thu', 'fri' => 'Fri', 'sat' => 'Sat'),
+                  'narrow' => array('sun'      => 'S', 'mon' => 'M', 'tue' => 'T', 'wed' => 'W',
+                      'thu'                    => 'T', 'fri' => 'F', 'sat' => 'S'),
+                  'wide' => array('sun'        => 'Sun', 'mon' => 'Mon', 'tue' => 'Tue', 'wed' => 'Wed',
+                      'thu'                    => 'Thu', 'fri' => 'Fri', 'sat' => 'Sat')
             ),
-            "stand-alone" => array("abbreviated" => array("sun" => "Sun", "mon" => "Mon", "tue" => "Tue", "wed" => "Wed",
-                      "thu" => "Thu", "fri" => "Fri", "sat" => "Sat"),
-                  "narrow" => array("sun" => "S", "mon" => "M", "tue" => "T", "wed" => "W",
-                      "thu" => "T", "fri" => "F", "sat" => "S"),
-                  "wide" => array("sun" => "Sun", "mon" => "Mon", "tue" => "Tue", "wed" => "Wed",
-                      "thu" => "Thu", "fri" => "Fri", "sat" => "Sat")
+            'stand-alone' => array('abbreviated' => array('sun' => 'Sun', 'mon' => 'Mon', 'tue' => 'Tue', 'wed' => 'Wed',
+                      'thu'                                     => 'Thu', 'fri' => 'Fri', 'sat' => 'Sat'),
+                  'narrow' => array('sun'                       => 'S', 'mon' => 'M', 'tue' => 'T', 'wed' => 'W',
+                      'thu'                                     => 'T', 'fri' => 'F', 'sat' => 'S'),
+                  'wide' => array('sun'                         => 'Sun', 'mon' => 'Mon', 'tue' => 'Tue', 'wed' => 'Wed',
+                      'thu'                                     => 'Thu', 'fri' => 'Fri', 'sat' => 'Sat')
             ));
         $this->assertEquals($result, $date);
 
         $date = Zend_Locale_Data::getList('de_AT', 'day');
-        $this->assertEquals(array("sun" => "Sonntag", "mon" => "Montag", "tue" => "Dienstag",
-                      "wed" => "Mittwoch", "thu" => "Donnerstag", "fri" => "Freitag", "sat" => "Samstag"), $date);
+        $this->assertEquals(array('sun' => 'Sonntag', 'mon' => 'Montag', 'tue' => 'Dienstag',
+                      'wed'             => 'Mittwoch', 'thu' => 'Donnerstag', 'fri' => 'Freitag', 'sat' => 'Samstag'), $date);
 
         $date = Zend_Locale_Data::getList('de_AT', 'day', array('gregorian', 'format', 'wide'));
-        $this->assertEquals(array("sun" => "Sonntag", "mon" => "Montag", "tue" => "Dienstag",
-                      "wed" => "Mittwoch", "thu" => "Donnerstag", "fri" => "Freitag", "sat" => "Samstag"), $date);
+        $this->assertEquals(array('sun' => 'Sonntag', 'mon' => 'Montag', 'tue' => 'Dienstag',
+                      'wed'             => 'Mittwoch', 'thu' => 'Donnerstag', 'fri' => 'Freitag', 'sat' => 'Samstag'), $date);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'day', 'mon');
         $this->assertEquals('Montag', $value);
@@ -632,7 +634,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals('Montag', $value);
 
         $value = Zend_Locale_Data::getContent('ar', 'day', array('islamic', 'format', 'wide', 'mon'));
-        $this->assertEquals("Mon", $value);
+        $this->assertEquals('Mon', $value);
     }
 
     /**
@@ -641,39 +643,39 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testQuarter()
     {
-        $date = Zend_Locale_Data::getList('de_AT', 'quarters');
-        $result = array("format" =>
-            array("abbreviated" => array("1" => "Q1", "2" => "Q2", "3" => "Q3", "4" => "Q4"),
-                  "narrow" => array("1" => "1", "2" => "2", "3" => "3", "4" => "4"),
-                  "wide" => array("1" => "1. Quartal", "2" => "2. Quartal", "3" => "3. Quartal",
-                      "4" => "4. Quartal")
+        $date   = Zend_Locale_Data::getList('de_AT', 'quarters');
+        $result = array('format' =>
+            array('abbreviated' => array('1' => 'Q1', '2' => 'Q2', '3' => 'Q3', '4' => 'Q4'),
+                  'narrow'      => array('1' => '1', '2' => '2', '3' => '3', '4' => '4'),
+                  'wide'        => array('1' => '1. Quartal', '2' => '2. Quartal', '3' => '3. Quartal',
+                      '4'                    => '4. Quartal')
             ),
-            "stand-alone" => array("abbreviated" => array("1" => "Q1", "2" => "Q2", "3" => "Q3", "4" => "Q4"),
-                  "narrow" => array("1" => "1", "2" => "2", "3" => "3", "4" => "4"),
-                  "wide" => array("1" => "1. Quartal", "2" => "2. Quartal", "3" => "3. Quartal", "4" => "4. Quartal")
+            'stand-alone' => array('abbreviated' => array('1' => 'Q1', '2' => 'Q2', '3' => 'Q3', '4' => 'Q4'),
+                  'narrow'                       => array('1' => '1', '2' => '2', '3' => '3', '4' => '4'),
+                  'wide'                         => array('1' => '1. Quartal', '2' => '2. Quartal', '3' => '3. Quartal', '4' => '4. Quartal')
             ));
         $this->assertEquals($result, $date);
 
-        $date = Zend_Locale_Data::getList('de_AT', 'quarters', 'islamic');
-        $result = array("format" =>
-            array("abbreviated" => array("1" => "Q1", "2" => "Q2", "3" => "Q3", "4" => "Q4"),
-                  "narrow" => array("1" => "1", "2" => "2", "3" => "3", "4" => "4"),
-                  "wide" => array("1" => "Q1", "2" => "Q2", "3" => "Q3",
-                      "4" => "Q4")
+        $date   = Zend_Locale_Data::getList('de_AT', 'quarters', 'islamic');
+        $result = array('format' =>
+            array('abbreviated' => array('1' => 'Q1', '2' => 'Q2', '3' => 'Q3', '4' => 'Q4'),
+                  'narrow'      => array('1' => '1', '2' => '2', '3' => '3', '4' => '4'),
+                  'wide'        => array('1' => 'Q1', '2' => 'Q2', '3' => 'Q3',
+                      '4'                    => 'Q4')
             ),
-            "stand-alone" => array("abbreviated" => array("1" => "Q1", "2" => "Q2", "3" => "Q3", "4" => "Q4"),
-                  "narrow" => array("1" => "1", "2" => "2", "3" => "3", "4" => "4"),
-                  "wide" => array("1" => "Q1", "2" => "Q2", "3" => "Q3", "4" => "Q4")
+            'stand-alone' => array('abbreviated' => array('1' => 'Q1', '2' => 'Q2', '3' => 'Q3', '4' => 'Q4'),
+                  'narrow'                       => array('1' => '1', '2' => '2', '3' => '3', '4' => '4'),
+                  'wide'                         => array('1' => 'Q1', '2' => 'Q2', '3' => 'Q3', '4' => 'Q4')
             ));
         $this->assertEquals($result, $date);
 
         $date = Zend_Locale_Data::getList('de_AT', 'quarter');
-        $this->assertEquals(array("1" => "1. Quartal", "2" => "2. Quartal", "3" => "3. Quartal",
-                      "4" => "4. Quartal"), $date);
+        $this->assertEquals(array('1' => '1. Quartal', '2' => '2. Quartal', '3' => '3. Quartal',
+                      '4'             => '4. Quartal'), $date);
 
         $date = Zend_Locale_Data::getList('de_AT', 'quarter', array('gregorian', 'format', 'wide'));
-        $this->assertEquals(array("1" => "1. Quartal", "2" => "2. Quartal", "3" => "3. Quartal",
-                      "4" => "4. Quartal"), $date);
+        $this->assertEquals(array('1' => '1. Quartal', '2' => '2. Quartal', '3' => '3. Quartal',
+                      '4'             => '4. Quartal'), $date);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'quarter', '1');
         $this->assertEquals('1. Quartal', $value);
@@ -682,7 +684,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals('1. Quartal', $value);
 
         $value = Zend_Locale_Data::getContent('ar', 'quarter', array('islamic', 'format', 'wide', '1'));
-        $this->assertEquals("Q1", $value);
+        $this->assertEquals('Q1', $value);
     }
 
     /**
@@ -692,11 +694,11 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testWeek()
     {
         $value = Zend_Locale_Data::getList('de_AT', 'week');
-        $this->assertEquals(array('minDays' => 4, 'firstDay' => 'mon', 'weekendStart' => 'sat',
+        $this->assertEquals(array('minDays'    => 4, 'firstDay' => 'mon', 'weekendStart' => 'sat',
                                   'weekendEnd' => 'sun'), $value);
 
         $value = Zend_Locale_Data::getList('en_US', 'week');
-        $this->assertEquals(array('minDays' => '1', 'firstDay' => 'sun', 'weekendStart' => 'sat',
+        $this->assertEquals(array('minDays'    => '1', 'firstDay' => 'sun', 'weekendStart' => 'sat',
                                   'weekendEnd' => 'sun'), $value);
     }
 
@@ -707,10 +709,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testAm()
     {
         $date = Zend_Locale_Data::getContent('de_AT', 'am');
-        $this->assertEquals("vorm.", $date);
+        $this->assertEquals('vorm.', $date);
 
         $date = Zend_Locale_Data::getContent('de_AT', 'am', 'islamic');
-        $this->assertEquals("AM", $date);
+        $this->assertEquals('AM', $date);
     }
 
     /**
@@ -720,10 +722,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testPm()
     {
         $date = Zend_Locale_Data::getContent('de_AT', 'pm');
-        $this->assertEquals("nachm.", $date);
+        $this->assertEquals('nachm.', $date);
 
         $date = Zend_Locale_Data::getContent('de_AT', 'pm', 'islamic');
-        $this->assertEquals("PM", $date);
+        $this->assertEquals('PM', $date);
     }
 
     /**
@@ -732,9 +734,9 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testEra()
     {
-        $date = Zend_Locale_Data::getList('de_AT', 'eras');
+        $date   = Zend_Locale_Data::getList('de_AT', 'eras');
         $result = array(
-            'names'       =>
+            'names' =>
                 array(
                     0 => 'v. Chr.',
                     1 => 'n. Chr.',
@@ -744,7 +746,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                     0 => 'v. Chr.',
                     1 => 'n. Chr.',
                 ),
-            'narrow'      =>
+            'narrow' =>
                 array(
                     0 => 'v. Chr.',
                     1 => 'n. Chr.',
@@ -752,15 +754,15 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         );
         $this->assertEquals($result, $date, var_export($date, 1));
 
-        $date = Zend_Locale_Data::getList('de_AT', 'eras', 'islamic');
-        $result = array("abbreviated" => array("0" => "AH"), "narrow" => array("0" => "AH"), "names" => array("0" => "AH"));
+        $date   = Zend_Locale_Data::getList('de_AT', 'eras', 'islamic');
+        $result = array('abbreviated' => array('0' => 'AH'), 'narrow' => array('0' => 'AH'), 'names' => array('0' => 'AH'));
         $this->assertEquals($result, $date);
 
         $date = Zend_Locale_Data::getList('de_AT', 'era');
-        $this->assertEquals(array("0" => "v. Chr.", "1" => "n. Chr."), $date);
+        $this->assertEquals(array('0' => 'v. Chr.', '1' => 'n. Chr.'), $date);
 
         $date = Zend_Locale_Data::getList('de_AT', 'era', array('gregorian', 'Abbr'));
-        $this->assertEquals(array("0" => "v. Chr.", "1" => "n. Chr."), $date);
+        $this->assertEquals(array('0' => 'v. Chr.', '1' => 'n. Chr.'), $date);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'era', '1');
         $this->assertEquals('n. Chr.', $value);
@@ -779,10 +781,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testDefaultDate()
     {
         $value = Zend_Locale_Data::getContent('de_AT', 'defaultdate');
-        $this->assertEquals("medium", $value);
+        $this->assertEquals('medium', $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'defaultdate', 'gregorian');
-        $this->assertEquals("medium", $value);
+        $this->assertEquals('medium', $value);
     }
 
     /**
@@ -791,24 +793,24 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testDate()
     {
-        $date = Zend_Locale_Data::getList('de_AT', 'date');
-        $result = array("full" => "EEEE, dd. MMMM y", "long" => "dd. MMMM y",
-                        "medium" => "dd.MM.y", "short" => "dd.MM.yy");
+        $date   = Zend_Locale_Data::getList('de_AT', 'date');
+        $result = array('full'   => 'EEEE, dd. MMMM y', 'long' => 'dd. MMMM y',
+                        'medium' => 'dd.MM.y', 'short' => 'dd.MM.yy');
         $this->assertEquals($result, $date);
 
-        $date = Zend_Locale_Data::getList('de_AT', 'date', 'islamic');
-        $result = array("full" => "G y MMMM d, EEEE", "long" => "G y MMMM d",
-                        "medium" => "G y MMM d", "short" => "GGGGG y-MM-dd");
+        $date   = Zend_Locale_Data::getList('de_AT', 'date', 'islamic');
+        $result = array('full'   => 'G y MMMM d, EEEE', 'long' => 'G y MMMM d',
+                        'medium' => 'G y MMM d', 'short' => 'GGGGG y-MM-dd');
         $this->assertEquals($result, $date);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'date');
-        $this->assertEquals("dd.MM.y", $value);
+        $this->assertEquals('dd.MM.y', $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'date', 'long');
-        $this->assertEquals("dd. MMMM y", $value);
+        $this->assertEquals('dd. MMMM y', $value);
 
         $value = Zend_Locale_Data::getContent('ar', 'date', array('islamic', 'long'));
-        $this->assertEquals("d MMMM، y G", $value);
+        $this->assertEquals('d MMMM، y G', $value);
     }
 
     /**
@@ -818,10 +820,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testDefaultTime()
     {
         $value = Zend_Locale_Data::getContent('de_AT', 'defaulttime');
-        $this->assertEquals("medium", $value);
+        $this->assertEquals('medium', $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'defaulttime', 'gregorian');
-        $this->assertEquals("medium", $value);
+        $this->assertEquals('medium', $value);
     }
 
     /**
@@ -830,24 +832,24 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTime()
     {
-        $date = Zend_Locale_Data::getList('de_AT', 'time');
-        $result = array("full" => "HH:mm:ss zzzz", "long" => "HH:mm:ss z",
-                        "medium" => "HH:mm:ss", "short" => "HH:mm");
+        $date   = Zend_Locale_Data::getList('de_AT', 'time');
+        $result = array('full'   => 'HH:mm:ss zzzz', 'long' => 'HH:mm:ss z',
+                        'medium' => 'HH:mm:ss', 'short' => 'HH:mm');
         $this->assertEquals($result, $date);
 
-        $date = Zend_Locale_Data::getList('de_AT', 'time', 'islamic');
-        $result = array("full" => "HH:mm:ss zzzz", "long" => "HH:mm:ss z",
-                        "medium" => "HH:mm:ss", "short" => "HH:mm");
+        $date   = Zend_Locale_Data::getList('de_AT', 'time', 'islamic');
+        $result = array('full'   => 'HH:mm:ss zzzz', 'long' => 'HH:mm:ss z',
+                        'medium' => 'HH:mm:ss', 'short' => 'HH:mm');
         $this->assertEquals($result, $date);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'time');
-        $this->assertEquals("HH:mm:ss", $value);
+        $this->assertEquals('HH:mm:ss', $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'time', 'long');
-        $this->assertEquals("HH:mm:ss z", $value);
+        $this->assertEquals('HH:mm:ss z', $value);
 
         $value = Zend_Locale_Data::getContent('ar', 'time', array('islamic', 'long'));
-        $this->assertEquals("HH:mm:ss z", $value);
+        $this->assertEquals('HH:mm:ss z', $value);
     }
 
     /**
@@ -856,29 +858,29 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testDateTime()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'datetime');
+        $value  = Zend_Locale_Data::getList('de_AT', 'datetime');
         $result = array(
-            'full' => 'EEEE, dd. MMMM y HH:mm:ss zzzz',
-            'long' => 'dd. MMMM y HH:mm:ss z',
+            'full'   => 'EEEE, dd. MMMM y HH:mm:ss zzzz',
+            'long'   => 'dd. MMMM y HH:mm:ss z',
             'medium' => 'dd.MM.y HH:mm:ss',
-            'short' => 'dd.MM.yy HH:mm'
+            'short'  => 'dd.MM.yy HH:mm'
         );
         $this->assertEquals($result, $value);
 
-        $value = Zend_Locale_Data::getList('de_AT', 'datetime', 'gregorian');
+        $value  = Zend_Locale_Data::getList('de_AT', 'datetime', 'gregorian');
         $result = array(
-            'full' => 'EEEE, dd. MMMM y HH:mm:ss zzzz',
-            'long' => 'dd. MMMM y HH:mm:ss z',
+            'full'   => 'EEEE, dd. MMMM y HH:mm:ss zzzz',
+            'long'   => 'dd. MMMM y HH:mm:ss z',
             'medium' => 'dd.MM.y HH:mm:ss',
-            'short' => 'dd.MM.yy HH:mm'
+            'short'  => 'dd.MM.yy HH:mm'
         );
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'datetime', 'full');
-        $this->assertEquals("EEEE, dd. MMMM y HH:mm:ss zzzz", $value);
+        $this->assertEquals('EEEE, dd. MMMM y HH:mm:ss zzzz', $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'datetime', array('gregorian', 'long'));
-        $this->assertEquals("dd. MMMM y HH:mm:ss z", $value);
+        $this->assertEquals('dd. MMMM y HH:mm:ss z', $value);
     }
 
     /**
@@ -926,10 +928,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         );
 
         $value = Zend_Locale_Data::getContent('de_AT', 'field', 'week');
-        $this->assertEquals("Woche", $value);
+        $this->assertEquals('Woche', $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'field', array('gregorian', 'week'));
-        $this->assertEquals("Woche", $value);
+        $this->assertEquals('Woche', $value);
     }
 
     /**
@@ -939,30 +941,30 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testRelative()
     {
         $value = Zend_Locale_Data::getList('de_AT', 'relative');
-        $this->assertEquals(array("0" => "Heute", "1" => "Morgen", "2" => "Übermorgen",
-            "-1" => "Gestern", "-2" => "Vorgestern"), $value);
+        $this->assertEquals(array('0' => 'Heute', '1' => 'Morgen', '2' => 'Übermorgen',
+            '-1'                      => 'Gestern', '-2' => 'Vorgestern'), $value);
 
         $value = Zend_Locale_Data::getList('de_AT', 'relative', 'day');
-        $this->assertEquals(array("0" => "Heute", "1" => "Morgen", "2" => "Übermorgen",
-            "-1" => "Gestern", "-2" => "Vorgestern"), $value);
+        $this->assertEquals(array('0' => 'Heute', '1' => 'Morgen', '2' => 'Übermorgen',
+            '-1'                      => 'Gestern', '-2' => 'Vorgestern'), $value);
 
         $value = Zend_Locale_Data::getList('de_AT', 'relative', 'week');
-        $this->assertEquals(array("0" => "Diese Woche", "1" => "Nächste Woche",
-            "-1" => "Letzte Woche"), $value);
+        $this->assertEquals(array('0' => 'Diese Woche', '1' => 'Nächste Woche',
+            '-1'                      => 'Letzte Woche'), $value);
 
         $value = Zend_Locale_Data::getList('de_AT', 'relative', 'month');
-        $this->assertEquals(array("0" => "Dieser Monat", "1" => "Nächster Monat",
-            "-1" => "Letzter Monat"), $value);
+        $this->assertEquals(array('0' => 'Dieser Monat', '1' => 'Nächster Monat',
+            '-1'                      => 'Letzter Monat'), $value);
 
         $value = Zend_Locale_Data::getList('de_AT', 'relative', 'year');
-        $this->assertEquals(array("0" => "Dieses Jahr", "1" => "Nächstes Jahr",
-            "-1" => "Letztes Jahr"), $value);
+        $this->assertEquals(array('0' => 'Dieses Jahr', '1' => 'Nächstes Jahr',
+            '-1'                      => 'Letztes Jahr'), $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'relative', '-1');
-        $this->assertEquals("Gestern", $value);
+        $this->assertEquals('Gestern', $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'relative', array('gregorian', '-1'));
-        $this->assertEquals("Gestern", $value);
+        $this->assertEquals('Gestern', $value);
     }
 
     /**
@@ -971,11 +973,11 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testSymbols()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'symbols');
-        $result = array(    "decimal"  => ",", "group" => ".", "list"  => ";", "percent"  => "%",
+        $value  = Zend_Locale_Data::getList('de_AT', 'symbols');
+        $result = array(    'decimal' => ',', 'group' => '.', 'list' => ';', 'percent' => '%',
             // "zero"  => "0", "pattern"  => "#",
-            "plus"  => "+", "minus" => "-", "exponent" => "E",
-            "mille" => "‰", "infinity" => "∞", "nan"   => "NaN");
+            'plus'  => '+', 'minus' => '-', 'exponent' => 'E',
+            'mille' => '‰', 'infinity' => '∞', 'nan' => 'NaN');
         $this->assertEquals($result, $value);
     }
 
@@ -986,7 +988,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testDecimalNumber()
     {
         $value = Zend_Locale_Data::getContent('de_AT', 'decimalnumber');
-        $this->assertEquals("#,##0.###", $value);
+        $this->assertEquals('#,##0.###', $value);
     }
 
     /**
@@ -1006,7 +1008,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testScientificNumber()
     {
         $value = Zend_Locale_Data::getContent('de_AT', 'scientificnumber');
-        $this->assertEquals("#E0", $value);
+        $this->assertEquals('#E0', $value);
     }
 
     /**
@@ -1016,7 +1018,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testPercentNumber()
     {
         $value = Zend_Locale_Data::getContent('de_AT', 'percentnumber');
-        $this->assertEquals("#,##0 %", $value);
+        $this->assertEquals('#,##0 %', $value);
     }
 
     /**
@@ -1026,7 +1028,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testCurrencyNumber()
     {
         $value = Zend_Locale_Data::getContent('de_AT', 'currencynumber');
-        $this->assertEquals("¤ #,##0.00", $value);
+        $this->assertEquals('¤ #,##0.00', $value);
     }
 
     /**
@@ -1035,7 +1037,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testNameToCurrency()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'nametocurrency');
+        $value  = Zend_Locale_Data::getList('de_AT', 'nametocurrency');
         $result = array(
             'ADP' => 'Andorranische Pesete',
             'AED' => 'VAE-Dirham',
@@ -1315,7 +1317,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value, var_export($value, 1));
 
         $value = Zend_Locale_Data::getContent('de_AT', 'nametocurrency', 'USD');
-        $this->assertEquals("US-Dollar", $value);
+        $this->assertEquals('US-Dollar', $value);
     }
 
     /**
@@ -1324,7 +1326,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testCurrencyToName()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'currencytoname');
+        $value  = Zend_Locale_Data::getList('de_AT', 'currencytoname');
         $result = array(
             'Andorranische Pesete'                        => 'ADP',
             'VAE-Dirham'                                  => 'AED',
@@ -1604,7 +1606,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value, var_export($value, 1));
 
         $value = Zend_Locale_Data::getContent('de_AT', 'currencytoname', 'Unze Platin');
-        $this->assertEquals("XPT", $value);
+        $this->assertEquals('XPT', $value);
     }
 
     /**
@@ -1613,7 +1615,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testCurrencySymbol()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'currencysymbol');
+        $value  = Zend_Locale_Data::getList('de_AT', 'currencysymbol');
         $result = array(
             'ARS' => '$',
             'ATS' => 'öS',
@@ -1679,7 +1681,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value, var_export($value, 1));
 
         $value = Zend_Locale_Data::getContent('de_AT', 'currencysymbol', 'USD');
-        $this->assertEquals("$", $value);
+        $this->assertEquals('$', $value);
     }
 
     /**
@@ -1689,10 +1691,10 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testQuestion()
     {
         $value = Zend_Locale_Data::getList('de_AT', 'question');
-        $this->assertEquals(array("yes" => "ja:j", "no" => "nein:n"), $value);
+        $this->assertEquals(array('yes' => 'ja:j', 'no' => 'nein:n'), $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'question', 'yes');
-        $this->assertEquals("ja:j", $value);
+        $this->assertEquals('ja:j', $value);
     }
 
     /**
@@ -1770,14 +1772,15 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                 'YER'     => '0',
                 'ZMK'     => '0',
                 'ZWD'     => '0',
-            ), $value
+            ),
+            $value
         );
 
         $value = Zend_Locale_Data::getContent('de_AT', 'currencyfraction');
-        $this->assertEquals("2", $value);
+        $this->assertEquals('2', $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'currencyfraction', 'BHD');
-        $this->assertEquals("3", $value);
+        $this->assertEquals('3', $value);
     }
 
     /**
@@ -1855,14 +1858,15 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                 'YER'     => '0',
                 'ZMK'     => '0',
                 'ZWD'     => '0',
-            ), $value
+            ),
+            $value
         );
 
         $value = Zend_Locale_Data::getContent('de_AT', 'currencyrounding');
-        $this->assertEquals("0", $value);
+        $this->assertEquals('0', $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'currencyrounding', 'BHD');
-        $this->assertEquals("0", $value);
+        $this->assertEquals('0', $value);
     }
 
     /**
@@ -1871,7 +1875,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testCurrencyToRegion()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'currencytoregion');
+        $value  = Zend_Locale_Data::getList('de_AT', 'currencytoregion');
         $result = array(
             150  => 'EUR',
             'AC' => 'SHP',
@@ -2144,7 +2148,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'currencytoregion', 'AT');
-        $this->assertEquals("EUR", $value);
+        $this->assertEquals('EUR', $value);
     }
 
     /**
@@ -2153,7 +2157,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testRegionToCurrency()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'regiontocurrency');
+        $value  = Zend_Locale_Data::getList('de_AT', 'regiontocurrency');
         $result = array(
             'EUR' => '150 AD AT AX BE BL CY DE EA EE ES EU FI FR GF GP GR IC IE IT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF VA XK YT',
             'SHP' => 'AC SH',
@@ -2324,7 +2328,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
 
         $value = Zend_Locale_Data::getContent('de_AT', 'regiontocurrency', 'EUR');
         $this->assertEquals(
-            "150 AD AT AX BE BL CY DE EA EE ES EU FI FR GF GP GR IC IE IT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF VA XK YT",
+            '150 AD AT AX BE BL CY DE EA EE ES EU FI FR GF GP GR IC IE IT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF VA XK YT',
             $value
         );
     }
@@ -2335,31 +2339,31 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testRegionToTerritory()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'regiontoterritory');
+        $value  = Zend_Locale_Data::getList('de_AT', 'regiontoterritory');
         $result = array('001' => '019 002 150 142 009',
-            '011' => 'BF BJ CI CV GH GM GN GW LR ML MR NE NG SH SL SN TG', '013' => 'BZ CR GT HN MX NI PA SV',
-            '014' => 'BI DJ ER ET KE KM MG MU MW MZ RE RW SC SO TZ UG YT ZM ZW',
-            '142' => '145 143 030 034 035', '143' => 'TM TJ KG KZ UZ',
-            '145' => 'AE AM AZ BH CY GE IL IQ JO KW LB OM PS QA SA SY TR YE',
-            '015' => 'DZ EG EH LY MA SD SS TN EA IC', '150' => '154 155 151 039',
-            '151' => 'BG BY CZ HU MD PL RO RU SK UA',
-            '154' => 'GG IM JE AX DK EE FI FO GB IE IS LT LV NO SE SJ',
-            '155' => 'AT BE CH DE FR LI LU MC NL', '017' => 'AO CD CF CG CM GA GQ ST TD',
-            '018' => 'BW LS NA SZ ZA',
-            '019' => '021 013 029 005', '002' => '015 011 017 014 018', '021' => 'BM CA GL PM US',
-            '029' => 'AG AI AW BB BL BQ BS CU CW DM DO GD GP HT JM KN KY LC MF MQ MS PR SX TC TT VC VG VI',
-            '003' => '021 013 029', '030' => 'CN HK JP KP KR MN MO TW',
-            '035' => 'BN ID KH LA MM MY PH SG TH TL VN',
-            '039' => 'AD AL BA ES GI GR HR IT ME MK MT RS PT SI SM VA XK', '419' => '013 029 005',
-            '005' => 'AR BO BR CL CO EC FK GF GY PE PY SR UY VE', '053' => 'AU NF NZ',
-            '054' => 'FJ NC PG SB VU', '057' => 'FM GU KI MH MP NR PW',
-            '061' => 'AS CK NU PF PN TK TO TV WF WS', '034' => 'AF BD BT IN IR LK MV NP PK',
-            '009' => '053 054 057 061 QO', 'QO' => 'AQ BV CC CX GS HM IO TF UM AC CP DG TA',
-            'EU' => 'AT BE CY CZ DE DK EE ES FI FR GB GR HU IE IT LT LU LV MT NL PL PT SE SI SK BG RO');
+            '011'             => 'BF BJ CI CV GH GM GN GW LR ML MR NE NG SH SL SN TG', '013' => 'BZ CR GT HN MX NI PA SV',
+            '014'             => 'BI DJ ER ET KE KM MG MU MW MZ RE RW SC SO TZ UG YT ZM ZW',
+            '142'             => '145 143 030 034 035', '143' => 'TM TJ KG KZ UZ',
+            '145'             => 'AE AM AZ BH CY GE IL IQ JO KW LB OM PS QA SA SY TR YE',
+            '015'             => 'DZ EG EH LY MA SD SS TN EA IC', '150' => '154 155 151 039',
+            '151'             => 'BG BY CZ HU MD PL RO RU SK UA',
+            '154'             => 'GG IM JE AX DK EE FI FO GB IE IS LT LV NO SE SJ',
+            '155'             => 'AT BE CH DE FR LI LU MC NL', '017' => 'AO CD CF CG CM GA GQ ST TD',
+            '018'             => 'BW LS NA SZ ZA',
+            '019'             => '021 013 029 005', '002' => '015 011 017 014 018', '021' => 'BM CA GL PM US',
+            '029'             => 'AG AI AW BB BL BQ BS CU CW DM DO GD GP HT JM KN KY LC MF MQ MS PR SX TC TT VC VG VI',
+            '003'             => '021 013 029', '030' => 'CN HK JP KP KR MN MO TW',
+            '035'             => 'BN ID KH LA MM MY PH SG TH TL VN',
+            '039'             => 'AD AL BA ES GI GR HR IT ME MK MT RS PT SI SM VA XK', '419' => '013 029 005',
+            '005'             => 'AR BO BR CL CO EC FK GF GY PE PY SR UY VE', '053' => 'AU NF NZ',
+            '054'             => 'FJ NC PG SB VU', '057' => 'FM GU KI MH MP NR PW',
+            '061'             => 'AS CK NU PF PN TK TO TV WF WS', '034' => 'AF BD BT IN IR LK MV NP PK',
+            '009'             => '053 054 057 061 QO', 'QO' => 'AQ BV CC CX GS HM IO TF UM AC CP DG TA',
+            'EU'              => 'AT BE CY CZ DE DK EE ES FI FR GB GR HU IE IT LT LU LV MT NL PL PT SE SI SK BG RO');
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'regiontoterritory', '143');
-        $this->assertEquals("TM TJ KG KZ UZ", $value);
+        $this->assertEquals('TM TJ KG KZ UZ', $value);
     }
 
     /**
@@ -2368,296 +2372,296 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTerritoryToRegion()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'territorytoregion');
-        $result = array (
-  '019' => '001',
-  '002' => '001',
-  150 => '001',
-  142 => '001',
-  '009' => '001',
-  'BF' => '011',
-  'BJ' => '011',
-  'CI' => '011',
-  'CV' => '011',
-  'GH' => '011',
-  'GM' => '011',
-  'GN' => '011',
-  'GW' => '011',
-  'LR' => '011',
-  'ML' => '011',
-  'MR' => '011',
-  'NE' => '011',
-  'NG' => '011',
-  'SH' => '011',
-  'SL' => '011',
-  'SN' => '011',
-  'TG' => '011',
-  'BZ' => '013',
-  'CR' => '013',
-  'GT' => '013',
-  'HN' => '013',
-  'MX' => '013',
-  'NI' => '013',
-  'PA' => '013',
-  'SV' => '013',
-  'BI' => '014',
-  'DJ' => '014',
-  'ER' => '014',
-  'ET' => '014',
-  'KE' => '014',
-  'KM' => '014',
-  'MG' => '014',
-  'MU' => '014',
-  'MW' => '014',
-  'MZ' => '014',
-  'RE' => '014',
-  'RW' => '014',
-  'SC' => '014',
-  'SO' => '014',
-  'TZ' => '014',
-  'UG' => '014',
-  'YT' => '014',
-  'ZM' => '014',
-  'ZW' => '014',
-  145 => '142',
-  143 => '142',
-  '030' => '142',
-  '034' => '142',
-  '035' => '142',
-  'TM' => '143',
-  'TJ' => '143',
-  'KG' => '143',
-  'KZ' => '143',
-  'UZ' => '143',
-  'AE' => '145',
-  'AM' => '145',
-  'AZ' => '145',
-  'BH' => '145',
-  'CY' => '145 EU',
-  'GE' => '145',
-  'IL' => '145',
-  'IQ' => '145',
-  'JO' => '145',
-  'KW' => '145',
-  'LB' => '145',
-  'OM' => '145',
-  'PS' => '145',
-  'QA' => '145',
-  'SA' => '145',
-  'SY' => '145',
-  'TR' => '145',
-  'YE' => '145',
-  'DZ' => '015',
-  'EG' => '015',
-  'EH' => '015',
-  'LY' => '015',
-  'MA' => '015',
-  'SD' => '015',
-  'SS' => '015',
-  'TN' => '015',
-  'EA' => '015',
-  'IC' => '015',
-  154 => '150',
-  155 => '150',
-  151 => '150',
-  '039' => '150',
-  'BG' => '151 EU',
-  'BY' => '151',
-  'CZ' => '151 EU',
-  'HU' => '151 EU',
-  'MD' => '151',
-  'PL' => '151 EU',
-  'RO' => '151 EU',
-  'RU' => '151',
-  'SK' => '151 EU',
-  'UA' => '151',
-  'GG' => '154',
-  'IM' => '154',
-  'JE' => '154',
-  'AX' => '154',
-  'DK' => '154 EU',
-  'EE' => '154 EU',
-  'FI' => '154 EU',
-  'FO' => '154',
-  'GB' => '154 EU',
-  'IE' => '154 EU',
-  'IS' => '154',
-  'LT' => '154 EU',
-  'LV' => '154 EU',
-  'NO' => '154',
-  'SE' => '154 EU',
-  'SJ' => '154',
-  'AT' => '155 EU',
-  'BE' => '155 EU',
-  'CH' => '155',
-  'DE' => '155 EU',
-  'FR' => '155 EU',
-  'LI' => '155',
-  'LU' => '155 EU',
-  'MC' => '155',
-  'NL' => '155 EU',
-  'AO' => '017',
-  'CD' => '017',
-  'CF' => '017',
-  'CG' => '017',
-  'CM' => '017',
-  'GA' => '017',
-  'GQ' => '017',
-  'ST' => '017',
-  'TD' => '017',
-  'BW' => '018',
-  'LS' => '018',
-  'NA' => '018',
-  'SZ' => '018',
-  'ZA' => '018',
-  '021' => '019 003',
-  '013' => '019 003 419',
-  '029' => '019 003 419',
-  '005' => '019 419',
-  '015' => '002',
-  '011' => '002',
-  '017' => '002',
-  '014' => '002',
-  '018' => '002',
-  'BM' => '021',
-  'CA' => '021',
-  'GL' => '021',
-  'PM' => '021',
-  'US' => '021',
-  'AG' => '029',
-  'AI' => '029',
-  'AW' => '029',
-  'BB' => '029',
-  'BL' => '029',
-  'BQ' => '029',
-  'BS' => '029',
-  'CU' => '029',
-  'CW' => '029',
-  'DM' => '029',
-  'DO' => '029',
-  'GD' => '029',
-  'GP' => '029',
-  'HT' => '029',
-  'JM' => '029',
-  'KN' => '029',
-  'KY' => '029',
-  'LC' => '029',
-  'MF' => '029',
-  'MQ' => '029',
-  'MS' => '029',
-  'PR' => '029',
-  'SX' => '029',
-  'TC' => '029',
-  'TT' => '029',
-  'VC' => '029',
-  'VG' => '029',
-  'VI' => '029',
-  'CN' => '030',
-  'HK' => '030',
-  'JP' => '030',
-  'KP' => '030',
-  'KR' => '030',
-  'MN' => '030',
-  'MO' => '030',
-  'TW' => '030',
-  'BN' => '035',
-  'ID' => '035',
-  'KH' => '035',
-  'LA' => '035',
-  'MM' => '035',
-  'MY' => '035',
-  'PH' => '035',
-  'SG' => '035',
-  'TH' => '035',
-  'TL' => '035',
-  'VN' => '035',
-  'AD' => '039',
-  'AL' => '039',
-  'BA' => '039',
-  'ES' => '039 EU',
-  'GI' => '039',
-  'GR' => '039 EU',
-  'HR' => '039',
-  'IT' => '039 EU',
-  'ME' => '039',
-  'MK' => '039',
-  'MT' => '039 EU',
-  'RS' => '039',
-  'PT' => '039 EU',
-  'SI' => '039 EU',
-  'SM' => '039',
-  'VA' => '039',
-  'XK' => '039',
-  'AR' => '005',
-  'BO' => '005',
-  'BR' => '005',
-  'CL' => '005',
-  'CO' => '005',
-  'EC' => '005',
-  'FK' => '005',
-  'GF' => '005',
-  'GY' => '005',
-  'PE' => '005',
-  'PY' => '005',
-  'SR' => '005',
-  'UY' => '005',
-  'VE' => '005',
-  'AU' => '053',
-  'NF' => '053',
-  'NZ' => '053',
-  'FJ' => '054',
-  'NC' => '054',
-  'PG' => '054',
-  'SB' => '054',
-  'VU' => '054',
-  'FM' => '057',
-  'GU' => '057',
-  'KI' => '057',
-  'MH' => '057',
-  'MP' => '057',
-  'NR' => '057',
-  'PW' => '057',
-  'AS' => '061',
-  'CK' => '061',
-  'NU' => '061',
-  'PF' => '061',
-  'PN' => '061',
-  'TK' => '061',
-  'TO' => '061',
-  'TV' => '061',
-  'WF' => '061',
-  'WS' => '061',
-  'AF' => '034',
+        $value  = Zend_Locale_Data::getList('de_AT', 'territorytoregion');
+        $result = array(
+  '019'  => '001',
+  '002'  => '001',
+  150    => '001',
+  142    => '001',
+  '009'  => '001',
+  'BF'   => '011',
+  'BJ'   => '011',
+  'CI'   => '011',
+  'CV'   => '011',
+  'GH'   => '011',
+  'GM'   => '011',
+  'GN'   => '011',
+  'GW'   => '011',
+  'LR'   => '011',
+  'ML'   => '011',
+  'MR'   => '011',
+  'NE'   => '011',
+  'NG'   => '011',
+  'SH'   => '011',
+  'SL'   => '011',
+  'SN'   => '011',
+  'TG'   => '011',
+  'BZ'   => '013',
+  'CR'   => '013',
+  'GT'   => '013',
+  'HN'   => '013',
+  'MX'   => '013',
+  'NI'   => '013',
+  'PA'   => '013',
+  'SV'   => '013',
+  'BI'   => '014',
+  'DJ'   => '014',
+  'ER'   => '014',
+  'ET'   => '014',
+  'KE'   => '014',
+  'KM'   => '014',
+  'MG'   => '014',
+  'MU'   => '014',
+  'MW'   => '014',
+  'MZ'   => '014',
+  'RE'   => '014',
+  'RW'   => '014',
+  'SC'   => '014',
+  'SO'   => '014',
+  'TZ'   => '014',
+  'UG'   => '014',
+  'YT'   => '014',
+  'ZM'   => '014',
+  'ZW'   => '014',
+  145    => '142',
+  143    => '142',
+  '030'  => '142',
+  '034'  => '142',
+  '035'  => '142',
+  'TM'   => '143',
+  'TJ'   => '143',
+  'KG'   => '143',
+  'KZ'   => '143',
+  'UZ'   => '143',
+  'AE'   => '145',
+  'AM'   => '145',
+  'AZ'   => '145',
+  'BH'   => '145',
+  'CY'   => '145 EU',
+  'GE'   => '145',
+  'IL'   => '145',
+  'IQ'   => '145',
+  'JO'   => '145',
+  'KW'   => '145',
+  'LB'   => '145',
+  'OM'   => '145',
+  'PS'   => '145',
+  'QA'   => '145',
+  'SA'   => '145',
+  'SY'   => '145',
+  'TR'   => '145',
+  'YE'   => '145',
+  'DZ'   => '015',
+  'EG'   => '015',
+  'EH'   => '015',
+  'LY'   => '015',
+  'MA'   => '015',
+  'SD'   => '015',
+  'SS'   => '015',
+  'TN'   => '015',
+  'EA'   => '015',
+  'IC'   => '015',
+  154    => '150',
+  155    => '150',
+  151    => '150',
+  '039'  => '150',
+  'BG'   => '151 EU',
+  'BY'   => '151',
+  'CZ'   => '151 EU',
+  'HU'   => '151 EU',
+  'MD'   => '151',
+  'PL'   => '151 EU',
+  'RO'   => '151 EU',
+  'RU'   => '151',
+  'SK'   => '151 EU',
+  'UA'   => '151',
+  'GG'   => '154',
+  'IM'   => '154',
+  'JE'   => '154',
+  'AX'   => '154',
+  'DK'   => '154 EU',
+  'EE'   => '154 EU',
+  'FI'   => '154 EU',
+  'FO'   => '154',
+  'GB'   => '154 EU',
+  'IE'   => '154 EU',
+  'IS'   => '154',
+  'LT'   => '154 EU',
+  'LV'   => '154 EU',
+  'NO'   => '154',
+  'SE'   => '154 EU',
+  'SJ'   => '154',
+  'AT'   => '155 EU',
+  'BE'   => '155 EU',
+  'CH'   => '155',
+  'DE'   => '155 EU',
+  'FR'   => '155 EU',
+  'LI'   => '155',
+  'LU'   => '155 EU',
+  'MC'   => '155',
+  'NL'   => '155 EU',
+  'AO'   => '017',
+  'CD'   => '017',
+  'CF'   => '017',
+  'CG'   => '017',
+  'CM'   => '017',
+  'GA'   => '017',
+  'GQ'   => '017',
+  'ST'   => '017',
+  'TD'   => '017',
+  'BW'   => '018',
+  'LS'   => '018',
+  'NA'   => '018',
+  'SZ'   => '018',
+  'ZA'   => '018',
+  '021'  => '019 003',
+  '013'  => '019 003 419',
+  '029'  => '019 003 419',
+  '005'  => '019 419',
+  '015'  => '002',
+  '011'  => '002',
+  '017'  => '002',
+  '014'  => '002',
+  '018'  => '002',
+  'BM'   => '021',
+  'CA'   => '021',
+  'GL'   => '021',
+  'PM'   => '021',
+  'US'   => '021',
+  'AG'   => '029',
+  'AI'   => '029',
+  'AW'   => '029',
+  'BB'   => '029',
+  'BL'   => '029',
+  'BQ'   => '029',
+  'BS'   => '029',
+  'CU'   => '029',
+  'CW'   => '029',
+  'DM'   => '029',
+  'DO'   => '029',
+  'GD'   => '029',
+  'GP'   => '029',
+  'HT'   => '029',
+  'JM'   => '029',
+  'KN'   => '029',
+  'KY'   => '029',
+  'LC'   => '029',
+  'MF'   => '029',
+  'MQ'   => '029',
+  'MS'   => '029',
+  'PR'   => '029',
+  'SX'   => '029',
+  'TC'   => '029',
+  'TT'   => '029',
+  'VC'   => '029',
+  'VG'   => '029',
+  'VI'   => '029',
+  'CN'   => '030',
+  'HK'   => '030',
+  'JP'   => '030',
+  'KP'   => '030',
+  'KR'   => '030',
+  'MN'   => '030',
+  'MO'   => '030',
+  'TW'   => '030',
+  'BN'   => '035',
+  'ID'   => '035',
+  'KH'   => '035',
+  'LA'   => '035',
+  'MM'   => '035',
+  'MY'   => '035',
+  'PH'   => '035',
+  'SG'   => '035',
+  'TH'   => '035',
+  'TL'   => '035',
+  'VN'   => '035',
+  'AD'   => '039',
+  'AL'   => '039',
+  'BA'   => '039',
+  'ES'   => '039 EU',
+  'GI'   => '039',
+  'GR'   => '039 EU',
+  'HR'   => '039',
+  'IT'   => '039 EU',
+  'ME'   => '039',
+  'MK'   => '039',
+  'MT'   => '039 EU',
+  'RS'   => '039',
+  'PT'   => '039 EU',
+  'SI'   => '039 EU',
+  'SM'   => '039',
+  'VA'   => '039',
+  'XK'   => '039',
+  'AR'   => '005',
+  'BO'   => '005',
+  'BR'   => '005',
+  'CL'   => '005',
+  'CO'   => '005',
+  'EC'   => '005',
+  'FK'   => '005',
+  'GF'   => '005',
+  'GY'   => '005',
+  'PE'   => '005',
+  'PY'   => '005',
+  'SR'   => '005',
+  'UY'   => '005',
+  'VE'   => '005',
+  'AU'   => '053',
+  'NF'   => '053',
+  'NZ'   => '053',
+  'FJ'   => '054',
+  'NC'   => '054',
+  'PG'   => '054',
+  'SB'   => '054',
+  'VU'   => '054',
+  'FM'   => '057',
+  'GU'   => '057',
+  'KI'   => '057',
+  'MH'   => '057',
+  'MP'   => '057',
+  'NR'   => '057',
+  'PW'   => '057',
+  'AS'   => '061',
+  'CK'   => '061',
+  'NU'   => '061',
+  'PF'   => '061',
+  'PN'   => '061',
+  'TK'   => '061',
+  'TO'   => '061',
+  'TV'   => '061',
+  'WF'   => '061',
+  'WS'   => '061',
+  'AF'   => '034',
     'BD' => '034',
-  'BT' => '034',
-  'IN' => '034',
-  'IR' => '034',
-  'LK' => '034',
-  'MV' => '034',
-  'NP' => '034',
-  'PK' => '034',
-  '053' => '009',
-  '054' => '009',
-  '057' => '009',
-  '061' => '009',
-  'QO' => '009',
-  'AQ' => 'QO',
-  'BV' => 'QO',
-  'CC' => 'QO',
-  'CX' => 'QO',
-  'GS' => 'QO',
-  'HM' => 'QO',
-  'IO' => 'QO',
-  'TF' => 'QO',
-  'UM' => 'QO',
-  'AC' => 'QO',
-  'CP' => 'QO',
-  'DG' => 'QO',
-  'TA' => 'QO');
+  'BT'   => '034',
+  'IN'   => '034',
+  'IR'   => '034',
+  'LK'   => '034',
+  'MV'   => '034',
+  'NP'   => '034',
+  'PK'   => '034',
+  '053'  => '009',
+  '054'  => '009',
+  '057'  => '009',
+  '061'  => '009',
+  'QO'   => '009',
+  'AQ'   => 'QO',
+  'BV'   => 'QO',
+  'CC'   => 'QO',
+  'CX'   => 'QO',
+  'GS'   => 'QO',
+  'HM'   => 'QO',
+  'IO'   => 'QO',
+  'TF'   => 'QO',
+  'UM'   => 'QO',
+  'AC'   => 'QO',
+  'CP'   => 'QO',
+  'DG'   => 'QO',
+  'TA'   => 'QO');
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'territorytoregion', 'AT');
-        $this->assertEquals("155 EU", $value);
+        $this->assertEquals('155 EU', $value);
     }
 
     /**
@@ -2666,7 +2670,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testScriptToLanguage()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'scripttolanguage');
+        $value  = Zend_Locale_Data::getList('de_AT', 'scripttolanguage');
         $result = array(
             'aa'  => 'Latn',
             'ab'  => 'Cyrl',
@@ -3301,7 +3305,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'scripttolanguage', 'uk');
-        $this->assertEquals("Cyrl", $value);
+        $this->assertEquals('Cyrl', $value);
     }
 
     /**
@@ -3310,7 +3314,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testLanguageToScript()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'languagetoscript');
+        $value  = Zend_Locale_Data::getList('de_AT', 'languagetoscript');
         $result = array(
             'Latn' => 'aa ace ach ada af agq ain ak ale amo an aoz arn arp arw asa ast atj ay az ban bas bbc bbj bem bez bfd bi bik bin bkm bku bla bm bmq bqv br bs bss bto buc bug bum bvb bya byv bze bzx ca cad car cay cch ceb cgg ch chk chn cho chp chy co cr cs csb cy da dak dav de del den dgr din dje dnj dsb dtm dua dyo dyu ebu ee efi eka en eo es et ett eu ewo fan ff fi fil fit fj fo fon fr frr frs fur fy ga gaa gag gay gcr gd gil gl gn gor gos grb gsw gub guz gv gwi ha hai haw hil hmn hnn ho hop hr hsb ht hu hup hz ia iba ibb id ig ik ilo is it jmc jv kab kac kaj kam kao kcg kck kde kea kfo kg kge kgp kha khq ki kj kl kln kmb kos kpe kr kri krl ksb ksf ksh ku kut kvr kw ky la lag lam lb lbw lg li lmo ln lol loz lt lu lua lui lun luo lut luy lv mad maf mak man mas maz mdh mdr mdt men mer mfe mg mgh mgy mh mi mic min moe moh mos ms mt mua mus mwk mwl mxc na nap naq nb nch nd nds ng nhe nhw nia nij niu nl nmg nn nr nso nus nv nxq ny nym nyn nyo nzi oc om osa osc pag pam pap pau pcm pko pl pon prg pt puu qu raj rap rar rcf rej ria rm rmf rmo rmu rn rng ro rob rof rom rup rw rwk sad saf saq sas sat sbp sc scn sco scs se see sef seh ses sg sga shi sid sk sl sm sma smj smn sms sn snk so sq sr srb srn srr ss ssy st su suk sus sv sw swc sxn syi tbw tem teo ter tet tg tiv tk tkl tli tmh tn to tog tpi tr tru trv ts tsg tsi ttj tum tvl twq ty tzm uli umb uz vai ve vi vic vo vot vun wa wae war was wo xav xh xog xum yao yap yav ybb yo yua za zap zea zmi zu zun',
             'Cyrl' => 'ab abq ady aii alt av az ba be bg bs bua ce chm cjs ckt crh cu cv dar dng evn gld inh kaa kbd kca kjh kk koi kpy krc ku kum kv ky lbe lez mdf mk mn mns mrj myv nog os rom ru rue sah sel sr tab tg tk tt tyv ude udm ug uk uz xal yrk',
@@ -3391,7 +3395,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'languagetoscript', 'Kana');
-        $this->assertEquals("ain ryu", $value);
+        $this->assertEquals('ain ryu', $value);
     }
 
     /**
@@ -3400,7 +3404,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTerritoryToLanguage()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'territorytolanguage');
+        $value  = Zend_Locale_Data::getList('de_AT', 'territorytolanguage');
         $result = array(
             'aa'  => 'DJ ET',
             'ab'  => 'GE',
@@ -3754,7 +3758,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value, var_export($value, true));
 
         $value = Zend_Locale_Data::getContent('de_AT', 'territorytolanguage', 'uk');
-        $this->assertEquals("UA", $value);
+        $this->assertEquals('UA', $value);
     }
 
     /**
@@ -3763,7 +3767,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testLanguageToTerritory()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'languagetoterritory');
+        $value  = Zend_Locale_Data::getList('de_AT', 'languagetoterritory');
         $result = array(
             'DJ' => 'aa ar fr',
             'ET' => 'aa am om sid wal',
@@ -4022,7 +4026,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'languagetoterritory', 'GQ');
-        $this->assertEquals("es fan fr", $value);
+        $this->assertEquals('es fan fr', $value);
     }
 
     /**
@@ -4031,7 +4035,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTimezoneToWindows()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'timezonetowindows');
+        $value  = Zend_Locale_Data::getList('de_AT', 'timezonetowindows');
         $result = array(
             'Dateline Standard Time'          => 'Etc/GMT+12',
             'UTC-11'                          => 'Etc/GMT+11',
@@ -4136,7 +4140,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'timezonetowindows', 'Fiji Standard Time');
-        $this->assertEquals("Pacific/Fiji", $value);
+        $this->assertEquals('Pacific/Fiji', $value);
     }
 
     /**
@@ -4145,7 +4149,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testWindowsToTimezone()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'windowstotimezone');
+        $value  = Zend_Locale_Data::getList('de_AT', 'windowstotimezone');
         $result = array(
             'Etc/GMT+12'                                                                                                                                                                                                                                                                       => 'Dateline Standard Time',
             'Etc/GMT+11'                                                                                                                                                                                                                                                                       => 'UTC-11',
@@ -4514,7 +4518,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'windowstotimezone', 'Pacific/Fiji');
-        $this->assertEquals("Fiji Standard Time", $value);
+        $this->assertEquals('Fiji Standard Time', $value);
     }
 
     /**
@@ -4523,275 +4527,275 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTerritoryToTimezone()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'territorytotimezone');
-        $result = array ('America/Rio_Branco' => '001', 'Asia/Kabul' => '001',
-            'Africa/Maputo' => '001', 'Africa/Bujumbura' => 'BI', 'Africa/Gaborone' => 'BW',
-            'Africa/Lubumbashi' => 'CD', 'Africa/Blantyre' => 'MW', 'Africa/Kigali' => 'RW',
-            'Africa/Lusaka' => 'ZM', 'Africa/Harare' => 'ZW', 'Africa/Nairobi' => '001',
-            'Africa/Djibouti' => 'DJ', 'Africa/Asmera' => 'ER', 'Africa/Addis_Ababa' => 'ET',
-            'Indian/Comoro' => 'KM', 'Indian/Antananarivo' => 'MG', 'Africa/Mogadishu' => 'SO',
-            'Africa/Dar_es_Salaam' => 'TZ', 'Africa/Kampala' => 'UG', 'Indian/Mayotte' => 'YT',
-            'Africa/El_Aaiun' => '001', 'Africa/Johannesburg' => '001', 'Africa/Maseru' => 'LS',
-            'Africa/Mbabane' => 'SZ', 'Africa/Lagos' => '001', 'Africa/Luanda' => 'AO',
-            'Africa/Porto-Novo' => 'BJ', 'Africa/Kinshasa' => 'CD', 'Africa/Bangui' => 'CF',
-            'Africa/Brazzaville' => 'CG', 'Africa/Douala' => 'CM', 'Africa/Libreville' => 'GA',
-            'Africa/Malabo' => 'GQ', 'Africa/Niamey' => 'NE', 'Africa/Ndjamena' => 'TD',
-            'Asia/Aqtobe' => '001', 'America/Juneau' => '001', 'America/Anchorage' => '001',
-            'Asia/Almaty' => '001', 'America/Manaus' => '001', 'America/Chicago' => '001',
-            'America/Belize' => 'BZ', 'America/Winnipeg' => 'CA', 'America/Costa_Rica' => 'CR',
-  'America/Guatemala' => 'GT', 'America/Tegucigalpa' => 'HN', 'America/Mexico_City' => 'MX',
-  'America/El_Salvador' => 'SV', 'America/New_York' => '001', 'America/Nassau' => 'BS',
-  'America/Toronto' => 'CA', 'America/Port-au-Prince' => 'HT', 'America/Jamaica' => 'JM',
-  'America/Cayman' => 'KY', 'America/Panama' => 'PA', 'America/Grand_Turk' => 'TC',
-  'America/Denver' => '001', 'America/Edmonton' => 'CA',
-                        'America/Hermosillo' => 'MX',
-                        'America/Los_Angeles' => '001',
-                        'America/Vancouver' => 'CA',
-                        'America/Tijuana' => 'MX',
-                        'Asia/Anadyr' => '001',
-                        'Asia/Aqtau' => '001',
-                        'Asia/Riyadh' => '001',
-                        'Asia/Bahrain' => 'BH',
-                        'Asia/Baghdad' => 'IQ',
-                        'Asia/Kuwait' => 'KW',
-                        'Asia/Qatar' => 'QA',
-                        'Asia/Aden' => 'YE',
-                        'America/Buenos_Aires' => '001',
+        $value  = Zend_Locale_Data::getList('de_AT', 'territorytotimezone');
+        $result = array('America/Rio_Branco'         => '001', 'Asia/Kabul' => '001',
+            'Africa/Maputo'                          => '001', 'Africa/Bujumbura' => 'BI', 'Africa/Gaborone' => 'BW',
+            'Africa/Lubumbashi'                      => 'CD', 'Africa/Blantyre' => 'MW', 'Africa/Kigali' => 'RW',
+            'Africa/Lusaka'                          => 'ZM', 'Africa/Harare' => 'ZW', 'Africa/Nairobi' => '001',
+            'Africa/Djibouti'                        => 'DJ', 'Africa/Asmera' => 'ER', 'Africa/Addis_Ababa' => 'ET',
+            'Indian/Comoro'                          => 'KM', 'Indian/Antananarivo' => 'MG', 'Africa/Mogadishu' => 'SO',
+            'Africa/Dar_es_Salaam'                   => 'TZ', 'Africa/Kampala' => 'UG', 'Indian/Mayotte' => 'YT',
+            'Africa/El_Aaiun'                        => '001', 'Africa/Johannesburg' => '001', 'Africa/Maseru' => 'LS',
+            'Africa/Mbabane'                         => 'SZ', 'Africa/Lagos' => '001', 'Africa/Luanda' => 'AO',
+            'Africa/Porto-Novo'                      => 'BJ', 'Africa/Kinshasa' => 'CD', 'Africa/Bangui' => 'CF',
+            'Africa/Brazzaville'                     => 'CG', 'Africa/Douala' => 'CM', 'Africa/Libreville' => 'GA',
+            'Africa/Malabo'                          => 'GQ', 'Africa/Niamey' => 'NE', 'Africa/Ndjamena' => 'TD',
+            'Asia/Aqtobe'                            => '001', 'America/Juneau' => '001', 'America/Anchorage' => '001',
+            'Asia/Almaty'                            => '001', 'America/Manaus' => '001', 'America/Chicago' => '001',
+            'America/Belize'                         => 'BZ', 'America/Winnipeg' => 'CA', 'America/Costa_Rica' => 'CR',
+  'America/Guatemala'                                => 'GT', 'America/Tegucigalpa' => 'HN', 'America/Mexico_City' => 'MX',
+  'America/El_Salvador'                              => 'SV', 'America/New_York' => '001', 'America/Nassau' => 'BS',
+  'America/Toronto'                                  => 'CA', 'America/Port-au-Prince' => 'HT', 'America/Jamaica' => 'JM',
+  'America/Cayman'                                   => 'KY', 'America/Panama' => 'PA', 'America/Grand_Turk' => 'TC',
+  'America/Denver'                                   => '001', 'America/Edmonton' => 'CA',
+                        'America/Hermosillo'         => 'MX',
+                        'America/Los_Angeles'        => '001',
+                        'America/Vancouver'          => 'CA',
+                        'America/Tijuana'            => 'MX',
+                        'Asia/Anadyr'                => '001',
+                        'Asia/Aqtau'                 => '001',
+                        'Asia/Riyadh'                => '001',
+                        'Asia/Bahrain'               => 'BH',
+                        'Asia/Baghdad'               => 'IQ',
+                        'Asia/Kuwait'                => 'KW',
+                        'Asia/Qatar'                 => 'QA',
+                        'Asia/Aden'                  => 'YE',
+                        'America/Buenos_Aires'       => '001',
                         'America/Argentina/San_Luis' => '001',
-                        'Asia/Yerevan' => '001',
-                        'Asia/Ashgabat' => '001',
-                        'America/Halifax' => '001',
-                        'America/Antigua' => 'AG',
-                        'America/Anguilla' => 'AI',
-                        'America/Curacao' => 'AN',
-                        'America/Aruba' => 'AW',
-                        'America/Barbados' => 'BB',
-                        'Atlantic/Bermuda' => 'BM',
-                        'America/Kralendijk' => 'BQ',
-                        'America/Dominica' => 'DM',
-                        'America/Grenada' => 'GD',
-                        'America/Thule' => 'GL',
-                        'America/Guadeloupe' => 'GP',
-                        'America/St_Kitts' => 'KN',
-                        'America/St_Lucia' => 'LC',
-                        'America/Marigot' => 'MF',
-                        'America/Martinique' => 'MQ',
-                        'America/Montserrat' => 'MS',
-                        'America/Puerto_Rico' => 'PR',
-                        'America/Lower_Princes' => 'SX',
-                        'America/Port_of_Spain' => 'TT',
-                        'America/St_Vincent' => 'VC',
-                        'America/Tortola' => 'VG',
-                        'America/St_Thomas' => 'VI',
-                        'Australia/Adelaide' => '001',
-                        'Australia/Eucla' => '001',
-                        'Australia/Sydney' => '001',
-                        'Australia/Perth' => '001',
-                        'Asia/Baku' => '001',
-                        'Atlantic/Azores' => '001',
-                        'Asia/Dhaka' => '001',
-                        'America/Adak' => '001',
-                        'Asia/Thimphu' => '001',
-                        'America/La_Paz' => '001',
-                        'Asia/Kuching' => '001',
-                        'America/Sao_Paulo' => '001',
-                        'Europe/London' => '001',
-                        'Asia/Brunei' => '001',
-                        'Atlantic/Cape_Verde' => '001',
-                        'Antarctica/Casey' => '001',
-                        'Pacific/Saipan' => '001',
-                        'Pacific/Guam' => 'GU',
-                        'Asia/Harbin' => '001',
-                        'Pacific/Chatham' => '001',
-                        'America/Santiago' => '001',
-                        'Antarctica/Palmer' => 'AQ',
-                        'Asia/Shanghai' => '001',
-                        'Asia/Choibalsan' => '001',
-                        'Indian/Christmas' => '001',
-                        'Indian/Cocos' => '001',
-                        'America/Bogota' => '001',
-                        'Pacific/Rarotonga' => '001',
-                        'America/Havana' => '001',
-                        'Antarctica/Davis' => '001',
-                        'America/Santo_Domingo' => '001',
-                        'Antarctica/DumontDUrville' => '001',
-                        'Asia/Dushanbe' => '001',
-                        'America/Paramaribo' => '001',
-                        'Asia/Dili' => '001',
-                        'Pacific/Easter' => '001',
-                        'America/Guayaquil' => '001',
-                        'Europe/Paris' => '001',
-                        'Europe/Andorra' => 'AD',
-                        'Europe/Tirane' => 'AL',
-                        'Europe/Vienna' => 'AT',
-                        'Europe/Sarajevo' => 'BA',
-                        'Europe/Brussels' => 'BE',
-                        'Europe/Zurich' => 'CH',
-                        'Europe/Prague' => 'CZ',
-                        'Europe/Berlin' => 'DE',
-                        'Europe/Copenhagen' => 'DK',
-                        'Europe/Madrid' => 'ES',
-                        'Europe/Gibraltar' => 'GI',
-                        'Europe/Zagreb' => 'HR',
-                        'Europe/Budapest' => 'HU',
-                        'Europe/Rome' => 'IT',
-                        'Europe/Vaduz' => 'LI',
-                        'Europe/Luxembourg' => 'LU',
-                        'Europe/Monaco' => 'MC',
-                        'Europe/Podgorica' => 'ME',
-                        'Europe/Skopje' => 'MK',
-                        'Europe/Malta' => 'MT',
-                        'Europe/Amsterdam' => 'NL',
-                        'Europe/Oslo' => 'NO',
-                        'Europe/Warsaw' => 'PL',
-                        'Europe/Belgrade' => 'RS',
-                        'Europe/Stockholm' => 'SE',
-                        'Europe/Ljubljana' => 'SI',
-                        'Europe/Bratislava' => 'SK',
-                        'Europe/San_Marino' => 'SM',
-                        'Africa/Tunis' => 'TN',
-                        'Europe/Vatican' => 'VA',
-                        'Europe/Bucharest' => '001',
-                        'Europe/Mariehamn' => 'AX',
-                        'Europe/Sofia' => 'BG',
-                        'Asia/Nicosia' => 'CY',
-                        'Africa/Cairo' => 'EG',
-                        'Europe/Helsinki' => 'FI',
-                        'Europe/Athens' => 'GR',
-                        'Asia/Amman' => 'JO',
-                        'Asia/Beirut' => 'LB',
-                        'Asia/Damascus' => 'SY',
-                        'Atlantic/Canary' => '001',
-                        'Atlantic/Faeroe' => 'FO',
-                        'Atlantic/Stanley' => '001',
-                        'Pacific/Fiji' => '001',
-                        'America/Cayenne' => '001',
-                        'Indian/Kerguelen' => '001',
-                        'Asia/Bishkek' => '001',
-                        'Pacific/Galapagos' => '001',
-                        'Pacific/Gambier' => '001',
-                        'Asia/Tbilisi' => '001',
-                        'Pacific/Tarawa' => '001',
-                        'Atlantic/Reykjavik' => '001',
-                        'Africa/Ouagadougou' => 'BF',
-                        'Africa/Abidjan' => 'CI',
-                        'Africa/Accra' => 'GH',
-                        'Africa/Banjul' => 'GM',
-                        'Africa/Conakry' => 'GN',
-                        'Europe/Dublin' => 'IE',
-                        'Africa/Bamako' => 'ML',
-                        'Africa/Nouakchott' => 'MR',
-                        'Atlantic/St_Helena' => 'SH',
-                        'Africa/Freetown' => 'SL',
-                        'Africa/Dakar' => 'SN',
-                        'Africa/Sao_Tome' => 'ST',
-                        'Africa/Lome' => 'TG',
-                        'America/Goose_Bay' => '001',
-                        'America/Scoresbysund' => '001',
-                        'America/Godthab' => '001',
-                        'Asia/Dubai' => '001',
-                        'Asia/Muscat' => 'OM',
-                        'America/Guyana' => '001',
-                        'Pacific/Honolulu' => '001',
-                        'Asia/Hong_Kong' => '001',
-                        'Asia/Hovd' => '001',
-                        'Asia/Calcutta' => '001',
-                        'Asia/Colombo' => 'LK',
-                        'Indian/Chagos' => '001',
-                        'Asia/Saigon' => '001',
-                        'Asia/Phnom_Penh' => 'KH',
-                        'Asia/Vientiane' => 'LA',
-                        'Asia/Bangkok' => 'TH',
-                        'Asia/Makassar' => '001',
-                        'Asia/Jayapura' => '001',
-                        'Asia/Jakarta' => '001',
-                        'Asia/Tehran' => '001',
-                        'Asia/Irkutsk' => '001',
-                        'Asia/Jerusalem' => '001',
-                        'Asia/Tokyo' => '001',
-                        'Asia/Kamchatka' => '001',
-                        'Asia/Karachi' => '001',
-                        'Asia/Kashgar' => '001',
-                        'Asia/Qyzylorda' => '001',
-                        'Asia/Seoul' => '001',
-                        'Asia/Pyongyang' => 'KP',
-                        'Pacific/Kosrae' => '001',
-                        'Asia/Krasnoyarsk' => '001',
-                        'Europe/Samara' => '001',
-                        'Pacific/Kwajalein' => '001',
-                        'Africa/Monrovia' => '001',
-                        'Pacific/Kiritimati' => '001',
-                        'Asia/Chongqing' => '001',
-                        'Australia/Lord_Howe' => '001',
-                        'Asia/Macau' => '001',
-                        'Antarctica/Macquarie' => '001',
-                        'Asia/Magadan' => '001',
-                        'Asia/Kuala_Lumpur' => '001',
-                        'Indian/Maldives' => '001',
-                        'Pacific/Marquesas' => '001',
-                        'Pacific/Majuro' => '001',
-                        'Indian/Mauritius' => '001',
-                        'Antarctica/Mawson' => '001',
-                        'America/Santa_Isabel' => '001',
-                        'America/Mazatlan' => '001',
-                        'Asia/Ulaanbaatar' => '001',
-                        'Europe/Moscow' => '001',
-                        'Asia/Rangoon' => '001',
-                        'Pacific/Nauru' => '001',
-                        'Asia/Katmandu' => '001',
-                        'Pacific/Noumea' => '001',
-                        'Pacific/Auckland' => '001',
-                        'Antarctica/McMurdo' => 'AQ',
-                        'America/St_Johns' => '001',
-                        'Pacific/Niue' => '001',
-                        'Pacific/Norfolk' => '001',
-                        'America/Noronha' => '001',
-                        'Asia/Novosibirsk' => '001',
-                        'Asia/Omsk' => '001',
-                        'Asia/Oral' => '001',
-                        'Pacific/Palau' => '001',
-                        'Pacific/Port_Moresby' => '001',
-                        'America/Asuncion' => '001',
-                        'America/Lima' => '001',
-                        'Asia/Manila' => '001',
-                        'Pacific/Enderbury' => '001',
-                        'America/Miquelon' => '001',
-                        'Pacific/Pitcairn' => '001',
-                        'Pacific/Ponape' => '001',
-                        'Indian/Reunion' => '001',
-                        'Antarctica/Rothera' => '001',
-                        'Asia/Sakhalin' => '001',
-                        'Asia/Samarkand' => '001',
-                        'Pacific/Apia' => '001',
-                        'Indian/Mahe' => '001',
-                        'Asia/Singapore' => '001',
-                        'Pacific/Guadalcanal' => '001',
-                        'Atlantic/South_Georgia' => '001',
-                        'Asia/Yekaterinburg' => '001',
-                        'Antarctica/Syowa' => '001',
-                        'Pacific/Tahiti' => '001',
-                        'Asia/Taipei' => '001',
-                        'Asia/Tashkent' => '001',
-                        'Pacific/Fakaofo' => '001',
-                        'Pacific/Tongatapu' => '001',
-                        'Pacific/Truk' => '001',
-                        'Europe/Istanbul' => '001',
-                        'Pacific/Funafuti' => '001',
-                        'America/Montevideo' => '001',
-                        'Asia/Urumqi' => '001',
-                        'Pacific/Efate' => '001',
-                        'America/Caracas' => '001',
-                        'Asia/Vladivostok' => '001',
-                        'Europe/Volgograd' => '001',
-                        'Antarctica/Vostok' => '001',
-                        'Pacific/Wake' => '001',
-                        'Pacific/Wallis' => '001',
-                        'Asia/Yakutsk' => '001',
-                        'America/Yakutat' => '001');
+                        'Asia/Yerevan'               => '001',
+                        'Asia/Ashgabat'              => '001',
+                        'America/Halifax'            => '001',
+                        'America/Antigua'            => 'AG',
+                        'America/Anguilla'           => 'AI',
+                        'America/Curacao'            => 'AN',
+                        'America/Aruba'              => 'AW',
+                        'America/Barbados'           => 'BB',
+                        'Atlantic/Bermuda'           => 'BM',
+                        'America/Kralendijk'         => 'BQ',
+                        'America/Dominica'           => 'DM',
+                        'America/Grenada'            => 'GD',
+                        'America/Thule'              => 'GL',
+                        'America/Guadeloupe'         => 'GP',
+                        'America/St_Kitts'           => 'KN',
+                        'America/St_Lucia'           => 'LC',
+                        'America/Marigot'            => 'MF',
+                        'America/Martinique'         => 'MQ',
+                        'America/Montserrat'         => 'MS',
+                        'America/Puerto_Rico'        => 'PR',
+                        'America/Lower_Princes'      => 'SX',
+                        'America/Port_of_Spain'      => 'TT',
+                        'America/St_Vincent'         => 'VC',
+                        'America/Tortola'            => 'VG',
+                        'America/St_Thomas'          => 'VI',
+                        'Australia/Adelaide'         => '001',
+                        'Australia/Eucla'            => '001',
+                        'Australia/Sydney'           => '001',
+                        'Australia/Perth'            => '001',
+                        'Asia/Baku'                  => '001',
+                        'Atlantic/Azores'            => '001',
+                        'Asia/Dhaka'                 => '001',
+                        'America/Adak'               => '001',
+                        'Asia/Thimphu'               => '001',
+                        'America/La_Paz'             => '001',
+                        'Asia/Kuching'               => '001',
+                        'America/Sao_Paulo'          => '001',
+                        'Europe/London'              => '001',
+                        'Asia/Brunei'                => '001',
+                        'Atlantic/Cape_Verde'        => '001',
+                        'Antarctica/Casey'           => '001',
+                        'Pacific/Saipan'             => '001',
+                        'Pacific/Guam'               => 'GU',
+                        'Asia/Harbin'                => '001',
+                        'Pacific/Chatham'            => '001',
+                        'America/Santiago'           => '001',
+                        'Antarctica/Palmer'          => 'AQ',
+                        'Asia/Shanghai'              => '001',
+                        'Asia/Choibalsan'            => '001',
+                        'Indian/Christmas'           => '001',
+                        'Indian/Cocos'               => '001',
+                        'America/Bogota'             => '001',
+                        'Pacific/Rarotonga'          => '001',
+                        'America/Havana'             => '001',
+                        'Antarctica/Davis'           => '001',
+                        'America/Santo_Domingo'      => '001',
+                        'Antarctica/DumontDUrville'  => '001',
+                        'Asia/Dushanbe'              => '001',
+                        'America/Paramaribo'         => '001',
+                        'Asia/Dili'                  => '001',
+                        'Pacific/Easter'             => '001',
+                        'America/Guayaquil'          => '001',
+                        'Europe/Paris'               => '001',
+                        'Europe/Andorra'             => 'AD',
+                        'Europe/Tirane'              => 'AL',
+                        'Europe/Vienna'              => 'AT',
+                        'Europe/Sarajevo'            => 'BA',
+                        'Europe/Brussels'            => 'BE',
+                        'Europe/Zurich'              => 'CH',
+                        'Europe/Prague'              => 'CZ',
+                        'Europe/Berlin'              => 'DE',
+                        'Europe/Copenhagen'          => 'DK',
+                        'Europe/Madrid'              => 'ES',
+                        'Europe/Gibraltar'           => 'GI',
+                        'Europe/Zagreb'              => 'HR',
+                        'Europe/Budapest'            => 'HU',
+                        'Europe/Rome'                => 'IT',
+                        'Europe/Vaduz'               => 'LI',
+                        'Europe/Luxembourg'          => 'LU',
+                        'Europe/Monaco'              => 'MC',
+                        'Europe/Podgorica'           => 'ME',
+                        'Europe/Skopje'              => 'MK',
+                        'Europe/Malta'               => 'MT',
+                        'Europe/Amsterdam'           => 'NL',
+                        'Europe/Oslo'                => 'NO',
+                        'Europe/Warsaw'              => 'PL',
+                        'Europe/Belgrade'            => 'RS',
+                        'Europe/Stockholm'           => 'SE',
+                        'Europe/Ljubljana'           => 'SI',
+                        'Europe/Bratislava'          => 'SK',
+                        'Europe/San_Marino'          => 'SM',
+                        'Africa/Tunis'               => 'TN',
+                        'Europe/Vatican'             => 'VA',
+                        'Europe/Bucharest'           => '001',
+                        'Europe/Mariehamn'           => 'AX',
+                        'Europe/Sofia'               => 'BG',
+                        'Asia/Nicosia'               => 'CY',
+                        'Africa/Cairo'               => 'EG',
+                        'Europe/Helsinki'            => 'FI',
+                        'Europe/Athens'              => 'GR',
+                        'Asia/Amman'                 => 'JO',
+                        'Asia/Beirut'                => 'LB',
+                        'Asia/Damascus'              => 'SY',
+                        'Atlantic/Canary'            => '001',
+                        'Atlantic/Faeroe'            => 'FO',
+                        'Atlantic/Stanley'           => '001',
+                        'Pacific/Fiji'               => '001',
+                        'America/Cayenne'            => '001',
+                        'Indian/Kerguelen'           => '001',
+                        'Asia/Bishkek'               => '001',
+                        'Pacific/Galapagos'          => '001',
+                        'Pacific/Gambier'            => '001',
+                        'Asia/Tbilisi'               => '001',
+                        'Pacific/Tarawa'             => '001',
+                        'Atlantic/Reykjavik'         => '001',
+                        'Africa/Ouagadougou'         => 'BF',
+                        'Africa/Abidjan'             => 'CI',
+                        'Africa/Accra'               => 'GH',
+                        'Africa/Banjul'              => 'GM',
+                        'Africa/Conakry'             => 'GN',
+                        'Europe/Dublin'              => 'IE',
+                        'Africa/Bamako'              => 'ML',
+                        'Africa/Nouakchott'          => 'MR',
+                        'Atlantic/St_Helena'         => 'SH',
+                        'Africa/Freetown'            => 'SL',
+                        'Africa/Dakar'               => 'SN',
+                        'Africa/Sao_Tome'            => 'ST',
+                        'Africa/Lome'                => 'TG',
+                        'America/Goose_Bay'          => '001',
+                        'America/Scoresbysund'       => '001',
+                        'America/Godthab'            => '001',
+                        'Asia/Dubai'                 => '001',
+                        'Asia/Muscat'                => 'OM',
+                        'America/Guyana'             => '001',
+                        'Pacific/Honolulu'           => '001',
+                        'Asia/Hong_Kong'             => '001',
+                        'Asia/Hovd'                  => '001',
+                        'Asia/Calcutta'              => '001',
+                        'Asia/Colombo'               => 'LK',
+                        'Indian/Chagos'              => '001',
+                        'Asia/Saigon'                => '001',
+                        'Asia/Phnom_Penh'            => 'KH',
+                        'Asia/Vientiane'             => 'LA',
+                        'Asia/Bangkok'               => 'TH',
+                        'Asia/Makassar'              => '001',
+                        'Asia/Jayapura'              => '001',
+                        'Asia/Jakarta'               => '001',
+                        'Asia/Tehran'                => '001',
+                        'Asia/Irkutsk'               => '001',
+                        'Asia/Jerusalem'             => '001',
+                        'Asia/Tokyo'                 => '001',
+                        'Asia/Kamchatka'             => '001',
+                        'Asia/Karachi'               => '001',
+                        'Asia/Kashgar'               => '001',
+                        'Asia/Qyzylorda'             => '001',
+                        'Asia/Seoul'                 => '001',
+                        'Asia/Pyongyang'             => 'KP',
+                        'Pacific/Kosrae'             => '001',
+                        'Asia/Krasnoyarsk'           => '001',
+                        'Europe/Samara'              => '001',
+                        'Pacific/Kwajalein'          => '001',
+                        'Africa/Monrovia'            => '001',
+                        'Pacific/Kiritimati'         => '001',
+                        'Asia/Chongqing'             => '001',
+                        'Australia/Lord_Howe'        => '001',
+                        'Asia/Macau'                 => '001',
+                        'Antarctica/Macquarie'       => '001',
+                        'Asia/Magadan'               => '001',
+                        'Asia/Kuala_Lumpur'          => '001',
+                        'Indian/Maldives'            => '001',
+                        'Pacific/Marquesas'          => '001',
+                        'Pacific/Majuro'             => '001',
+                        'Indian/Mauritius'           => '001',
+                        'Antarctica/Mawson'          => '001',
+                        'America/Santa_Isabel'       => '001',
+                        'America/Mazatlan'           => '001',
+                        'Asia/Ulaanbaatar'           => '001',
+                        'Europe/Moscow'              => '001',
+                        'Asia/Rangoon'               => '001',
+                        'Pacific/Nauru'              => '001',
+                        'Asia/Katmandu'              => '001',
+                        'Pacific/Noumea'             => '001',
+                        'Pacific/Auckland'           => '001',
+                        'Antarctica/McMurdo'         => 'AQ',
+                        'America/St_Johns'           => '001',
+                        'Pacific/Niue'               => '001',
+                        'Pacific/Norfolk'            => '001',
+                        'America/Noronha'            => '001',
+                        'Asia/Novosibirsk'           => '001',
+                        'Asia/Omsk'                  => '001',
+                        'Asia/Oral'                  => '001',
+                        'Pacific/Palau'              => '001',
+                        'Pacific/Port_Moresby'       => '001',
+                        'America/Asuncion'           => '001',
+                        'America/Lima'               => '001',
+                        'Asia/Manila'                => '001',
+                        'Pacific/Enderbury'          => '001',
+                        'America/Miquelon'           => '001',
+                        'Pacific/Pitcairn'           => '001',
+                        'Pacific/Ponape'             => '001',
+                        'Indian/Reunion'             => '001',
+                        'Antarctica/Rothera'         => '001',
+                        'Asia/Sakhalin'              => '001',
+                        'Asia/Samarkand'             => '001',
+                        'Pacific/Apia'               => '001',
+                        'Indian/Mahe'                => '001',
+                        'Asia/Singapore'             => '001',
+                        'Pacific/Guadalcanal'        => '001',
+                        'Atlantic/South_Georgia'     => '001',
+                        'Asia/Yekaterinburg'         => '001',
+                        'Antarctica/Syowa'           => '001',
+                        'Pacific/Tahiti'             => '001',
+                        'Asia/Taipei'                => '001',
+                        'Asia/Tashkent'              => '001',
+                        'Pacific/Fakaofo'            => '001',
+                        'Pacific/Tongatapu'          => '001',
+                        'Pacific/Truk'               => '001',
+                        'Europe/Istanbul'            => '001',
+                        'Pacific/Funafuti'           => '001',
+                        'America/Montevideo'         => '001',
+                        'Asia/Urumqi'                => '001',
+                        'Pacific/Efate'              => '001',
+                        'America/Caracas'            => '001',
+                        'Asia/Vladivostok'           => '001',
+                        'Europe/Volgograd'           => '001',
+                        'Antarctica/Vostok'          => '001',
+                        'Pacific/Wake'               => '001',
+                        'Pacific/Wallis'             => '001',
+                        'Asia/Yakutsk'               => '001',
+                        'America/Yakutat'            => '001');
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'territorytotimezone', 'Antarctica/Vostok');
-        $this->assertEquals("001", $value);
+        $this->assertEquals('001', $value);
     }
 
     /**
@@ -4800,7 +4804,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTimezoneToTerritory()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'timezonetoterritory');
+        $value  = Zend_Locale_Data::getList('de_AT', 'timezonetoterritory');
         $result = array(
             '001' => 'America/Rio_Branco',
             'BI'  => 'Africa/Bujumbura',
@@ -4937,7 +4941,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'timezonetoterritory', 'GU');
-        $this->assertEquals("Pacific/Guam", $value);
+        $this->assertEquals('Pacific/Guam', $value);
     }
 
     /**
@@ -4946,7 +4950,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testCityToTimezone()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'citytotimezone');
+        $value  = Zend_Locale_Data::getList('de_AT', 'citytotimezone');
         $result = array(
             'Etc/Unknown'                    => 'Unbekannt',
             'Europe/Tirane'                  => 'Tirana',
@@ -5071,7 +5075,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value, var_export($value, 1));
 
         $value = Zend_Locale_Data::getContent('de_AT', 'citytotimezone', 'Pacific/Fiji');
-        $this->assertEquals("Fidschi", $value);
+        $this->assertEquals('Fidschi', $value);
     }
 
     /**
@@ -5080,7 +5084,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTimezoneToCity()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'timezonetocity');
+        $value  = Zend_Locale_Data::getList('de_AT', 'timezonetocity');
         $result = array(
             'Unbekannt'               => 'Etc/Unknown',
             'Tirana'                  => 'Europe/Tirane',
@@ -5205,7 +5209,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value, var_export($value, 1));
 
         $value = Zend_Locale_Data::getContent('de_AT', 'timezonetocity', 'Fidschi');
-        $this->assertEquals("Pacific/Fiji", $value);
+        $this->assertEquals('Pacific/Fiji', $value);
     }
 
     /**
@@ -5214,7 +5218,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTerritoryToPhone()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'territorytophone');
+        $value  = Zend_Locale_Data::getList('de_AT', 'territorytophone');
         $result = array(
             388 => '001',
             247 => 'AC',
@@ -5426,7 +5430,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'territorytophone', '43');
-        $this->assertEquals("AT", $value);
+        $this->assertEquals('AT', $value);
     }
 
     /**
@@ -5435,7 +5439,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testPhoneToTerritory()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'phonetoterritory');
+        $value  = Zend_Locale_Data::getList('de_AT', 'phonetoterritory');
         $result = array(
             '001' => '388',
             'AC'  => '247',
@@ -5691,7 +5695,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'phonetoterritory', 'AT');
-        $this->assertEquals("43", $value);
+        $this->assertEquals('43', $value);
     }
 
     /**
@@ -5700,61 +5704,61 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTerritoryToNumeric()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'territorytonumeric');
+        $value  = Zend_Locale_Data::getList('de_AT', 'territorytonumeric');
         $result = array('958' => 'AA', '020' => 'AD', '784' => 'AE', '004' => 'AF', '028' => 'AG',
-            '660' => 'AI', '008' => 'AL', '051' => 'AM', '530' => 'AN', '024' => 'AO', '010' => 'AQ',
-            '032' => 'AR', '016' => 'AS', '040' => 'AT', '036' => 'AU', '533' => 'AW', '248' => 'AX',
-            '031' => 'AZ', '070' => 'BA', '052' => 'BB', '050' => 'BD', '056' => 'BE', '854' => 'BF',
-            '100' => 'BG', '048' => 'BH', '108' => 'BI', '204' => 'BJ', '652' => 'BL', '060' => 'BM',
-            '096' => 'BN', '068' => 'BO', '535' => 'BQ', '076' => 'BR', '044' => 'BS', '064' => 'BT', '104' => 'BU',
-            '074' => 'BV', '072' => 'BW', '112' => 'BY', '084' => 'BZ', '124' => 'CA', '166' => 'CC',
-            '180' => 'CD', '140' => 'CF', '178' => 'CG', '756' => 'CH', '384' => 'CI', '184' => 'CK',
-            '152' => 'CL', '120' => 'CM', '156' => 'CN', '170' => 'CO', '188' => 'CR', '891' => 'CS',
-            '192' => 'CU', '132' => 'CV', '531' => 'CW', '162' => 'CX', '196' => 'CY', '203' => 'CZ', '278' => 'DD',
-            '276' => 'DE', '262' => 'DJ', '208' => 'DK', '212' => 'DM', '214' => 'DO', '012' => 'DZ',
-            '218' => 'EC', '233' => 'EE', '818' => 'EG', '732' => 'EH', '232' => 'ER', '724' => 'ES',
-            '231' => 'ET', '967' => 'EU', '246' => 'FI', '242' => 'FJ', '238' => 'FK', '583' => 'FM', '234' => 'FO',
-            '250' => 'FR', '249' => 'FX', '266' => 'GA', '826' => 'GB', '308' => 'GD', '268' => 'GE',
-            '254' => 'GF', '831' => 'GG', '288' => 'GH', '292' => 'GI', '304' => 'GL', '270' => 'GM',
-            '324' => 'GN', '312' => 'GP', '226' => 'GQ', '300' => 'GR', '239' => 'GS', '320' => 'GT',
-            '316' => 'GU', '624' => 'GW', '328' => 'GY', '344' => 'HK', '334' => 'HM', '340' => 'HN',
-            '191' => 'HR', '332' => 'HT', '348' => 'HU', '360' => 'ID', '372' => 'IE', '376' => 'IL',
-            '833' => 'IM', '356' => 'IN', '086' => 'IO', '368' => 'IQ', '364' => 'IR', '352' => 'IS',
-            '380' => 'IT', '832' => 'JE', '388' => 'JM', '400' => 'JO', '392' => 'JP', '404' => 'KE',
-            '417' => 'KG', '116' => 'KH', '296' => 'KI', '174' => 'KM', '659' => 'KN', '408' => 'KP',
-            '410' => 'KR', '414' => 'KW', '136' => 'KY', '398' => 'KZ', '418' => 'LA', '422' => 'LB',
-            '662' => 'LC', '438' => 'LI', '144' => 'LK', '430' => 'LR', '426' => 'LS', '440' => 'LT',
-            '442' => 'LU', '428' => 'LV', '434' => 'LY', '504' => 'MA', '492' => 'MC', '498' => 'MD',
-            '499' => 'ME', '450' => 'MG', '663' => 'MF', '584' => 'MH', '807' => 'MK', '466' => 'ML',
-            '496' => 'MN', '446' => 'MO', '580' => 'MP', '474' => 'MQ', '478' => 'MR', '500' => 'MS',
-            '470' => 'MT', '480' => 'MU', '462' => 'MV', '454' => 'MW', '484' => 'MX', '458' => 'MY',
-            '508' => 'MZ', '516' => 'NA', '540' => 'NC', '562' => 'NE', '574' => 'NF', '566' => 'NG',
-            '558' => 'NI', '528' => 'NL', '578' => 'NO', '524' => 'NP', '520' => 'NR', '536' => 'NT',
-            '570' => 'NU', '554' => 'NZ', '512' => 'OM', '591' => 'PA', '604' => 'PE', '258' => 'PF',
-            '598' => 'PG', '608' => 'PH', '586' => 'PK', '616' => 'PL', '666' => 'PM', '612' => 'PN',
-            '630' => 'PR', '275' => 'PS', '620' => 'PT', '585' => 'PW', '600' => 'PY', '634' => 'QA',
-            '959' => 'QM', '960' => 'QN', '961' => 'QO', '962' => 'QP', '963' => 'QQ', '964' => 'QR',
-            '965' => 'QS', '966' => 'QT', '968' => 'QV', '969' => 'QW', '970' => 'QX',
-            '971' => 'QY', '972' => 'QZ', '638' => 'RE', '642' => 'RO', '688' => 'RS', '643' => 'RU',
-            '646' => 'RW', '682' => 'SA', '090' => 'SB', '690' => 'SC', '729' => 'SD', '752' => 'SE',
-            '702' => 'SG', '654' => 'SH', '705' => 'SI', '744' => 'SJ', '703' => 'SK', '694' => 'SL',
-            '674' => 'SM', '686' => 'SN', '706' => 'SO', '740' => 'SR', '728' => 'SS' , '678' => 'ST', '810' => 'SU',
-            '222' => 'SV', '534' => 'SX' ,'760' => 'SY', '748' => 'SZ', '796' => 'TC', '148' => 'TD', '260' => 'TF',
-            '768' => 'TG', '764' => 'TH', '762' => 'TJ', '772' => 'TK', '626' => 'TL', '795' => 'TM',
-            '788' => 'TN', '776' => 'TO', '792' => 'TR', '780' => 'TT', '798' => 'TV', '158' => 'TW',
-            '834' => 'TZ', '804' => 'UA', '800' => 'UG', '581' => 'UM', '840' => 'US', '858' => 'UY',
-            '860' => 'UZ', '336' => 'VA', '670' => 'VC', '862' => 'VE', '092' => 'VG', '850' => 'VI',
-            '704' => 'VN', '548' => 'VU', '876' => 'WF', '882' => 'WS', '973' => 'XA', '974' => 'XB',
-            '975' => 'XC', '976' => 'XD', '977' => 'XE', '978' => 'XF', '979' => 'XG', '980' => 'XH',
-            '981' => 'XI', '982' => 'XJ', '983' => 'XK', '984' => 'XL', '985' => 'XM', '986' => 'XN',
-            '987' => 'XO', '988' => 'XP', '989' => 'XQ', '990' => 'XR', '991' => 'XS', '992' => 'XT',
-            '993' => 'XU', '994' => 'XV', '995' => 'XW', '996' => 'XX', '997' => 'XY', '998' => 'XZ',
-            '720' => 'YD', '887' => 'YE', '175' => 'YT', '710' => 'ZA', '894' => 'ZM', '716' => 'ZW',
-            '999' => 'ZZ');
+            '660'             => 'AI', '008' => 'AL', '051' => 'AM', '530' => 'AN', '024' => 'AO', '010' => 'AQ',
+            '032'             => 'AR', '016' => 'AS', '040' => 'AT', '036' => 'AU', '533' => 'AW', '248' => 'AX',
+            '031'             => 'AZ', '070' => 'BA', '052' => 'BB', '050' => 'BD', '056' => 'BE', '854' => 'BF',
+            '100'             => 'BG', '048' => 'BH', '108' => 'BI', '204' => 'BJ', '652' => 'BL', '060' => 'BM',
+            '096'             => 'BN', '068' => 'BO', '535' => 'BQ', '076' => 'BR', '044' => 'BS', '064' => 'BT', '104' => 'BU',
+            '074'             => 'BV', '072' => 'BW', '112' => 'BY', '084' => 'BZ', '124' => 'CA', '166' => 'CC',
+            '180'             => 'CD', '140' => 'CF', '178' => 'CG', '756' => 'CH', '384' => 'CI', '184' => 'CK',
+            '152'             => 'CL', '120' => 'CM', '156' => 'CN', '170' => 'CO', '188' => 'CR', '891' => 'CS',
+            '192'             => 'CU', '132' => 'CV', '531' => 'CW', '162' => 'CX', '196' => 'CY', '203' => 'CZ', '278' => 'DD',
+            '276'             => 'DE', '262' => 'DJ', '208' => 'DK', '212' => 'DM', '214' => 'DO', '012' => 'DZ',
+            '218'             => 'EC', '233' => 'EE', '818' => 'EG', '732' => 'EH', '232' => 'ER', '724' => 'ES',
+            '231'             => 'ET', '967' => 'EU', '246' => 'FI', '242' => 'FJ', '238' => 'FK', '583' => 'FM', '234' => 'FO',
+            '250'             => 'FR', '249' => 'FX', '266' => 'GA', '826' => 'GB', '308' => 'GD', '268' => 'GE',
+            '254'             => 'GF', '831' => 'GG', '288' => 'GH', '292' => 'GI', '304' => 'GL', '270' => 'GM',
+            '324'             => 'GN', '312' => 'GP', '226' => 'GQ', '300' => 'GR', '239' => 'GS', '320' => 'GT',
+            '316'             => 'GU', '624' => 'GW', '328' => 'GY', '344' => 'HK', '334' => 'HM', '340' => 'HN',
+            '191'             => 'HR', '332' => 'HT', '348' => 'HU', '360' => 'ID', '372' => 'IE', '376' => 'IL',
+            '833'             => 'IM', '356' => 'IN', '086' => 'IO', '368' => 'IQ', '364' => 'IR', '352' => 'IS',
+            '380'             => 'IT', '832' => 'JE', '388' => 'JM', '400' => 'JO', '392' => 'JP', '404' => 'KE',
+            '417'             => 'KG', '116' => 'KH', '296' => 'KI', '174' => 'KM', '659' => 'KN', '408' => 'KP',
+            '410'             => 'KR', '414' => 'KW', '136' => 'KY', '398' => 'KZ', '418' => 'LA', '422' => 'LB',
+            '662'             => 'LC', '438' => 'LI', '144' => 'LK', '430' => 'LR', '426' => 'LS', '440' => 'LT',
+            '442'             => 'LU', '428' => 'LV', '434' => 'LY', '504' => 'MA', '492' => 'MC', '498' => 'MD',
+            '499'             => 'ME', '450' => 'MG', '663' => 'MF', '584' => 'MH', '807' => 'MK', '466' => 'ML',
+            '496'             => 'MN', '446' => 'MO', '580' => 'MP', '474' => 'MQ', '478' => 'MR', '500' => 'MS',
+            '470'             => 'MT', '480' => 'MU', '462' => 'MV', '454' => 'MW', '484' => 'MX', '458' => 'MY',
+            '508'             => 'MZ', '516' => 'NA', '540' => 'NC', '562' => 'NE', '574' => 'NF', '566' => 'NG',
+            '558'             => 'NI', '528' => 'NL', '578' => 'NO', '524' => 'NP', '520' => 'NR', '536' => 'NT',
+            '570'             => 'NU', '554' => 'NZ', '512' => 'OM', '591' => 'PA', '604' => 'PE', '258' => 'PF',
+            '598'             => 'PG', '608' => 'PH', '586' => 'PK', '616' => 'PL', '666' => 'PM', '612' => 'PN',
+            '630'             => 'PR', '275' => 'PS', '620' => 'PT', '585' => 'PW', '600' => 'PY', '634' => 'QA',
+            '959'             => 'QM', '960' => 'QN', '961' => 'QO', '962' => 'QP', '963' => 'QQ', '964' => 'QR',
+            '965'             => 'QS', '966' => 'QT', '968' => 'QV', '969' => 'QW', '970' => 'QX',
+            '971'             => 'QY', '972' => 'QZ', '638' => 'RE', '642' => 'RO', '688' => 'RS', '643' => 'RU',
+            '646'             => 'RW', '682' => 'SA', '090' => 'SB', '690' => 'SC', '729' => 'SD', '752' => 'SE',
+            '702'             => 'SG', '654' => 'SH', '705' => 'SI', '744' => 'SJ', '703' => 'SK', '694' => 'SL',
+            '674'             => 'SM', '686' => 'SN', '706' => 'SO', '740' => 'SR', '728' => 'SS' , '678' => 'ST', '810' => 'SU',
+            '222'             => 'SV', '534' => 'SX' ,'760' => 'SY', '748' => 'SZ', '796' => 'TC', '148' => 'TD', '260' => 'TF',
+            '768'             => 'TG', '764' => 'TH', '762' => 'TJ', '772' => 'TK', '626' => 'TL', '795' => 'TM',
+            '788'             => 'TN', '776' => 'TO', '792' => 'TR', '780' => 'TT', '798' => 'TV', '158' => 'TW',
+            '834'             => 'TZ', '804' => 'UA', '800' => 'UG', '581' => 'UM', '840' => 'US', '858' => 'UY',
+            '860'             => 'UZ', '336' => 'VA', '670' => 'VC', '862' => 'VE', '092' => 'VG', '850' => 'VI',
+            '704'             => 'VN', '548' => 'VU', '876' => 'WF', '882' => 'WS', '973' => 'XA', '974' => 'XB',
+            '975'             => 'XC', '976' => 'XD', '977' => 'XE', '978' => 'XF', '979' => 'XG', '980' => 'XH',
+            '981'             => 'XI', '982' => 'XJ', '983' => 'XK', '984' => 'XL', '985' => 'XM', '986' => 'XN',
+            '987'             => 'XO', '988' => 'XP', '989' => 'XQ', '990' => 'XR', '991' => 'XS', '992' => 'XT',
+            '993'             => 'XU', '994' => 'XV', '995' => 'XW', '996' => 'XX', '997' => 'XY', '998' => 'XZ',
+            '720'             => 'YD', '887' => 'YE', '175' => 'YT', '710' => 'ZA', '894' => 'ZM', '716' => 'ZW',
+            '999'             => 'ZZ');
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'territorytonumeric', '040');
-        $this->assertEquals("AT", $value);
+        $this->assertEquals('AT', $value);
     }
 
     /**
@@ -6078,7 +6082,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'numerictoterritory', 'AT');
-        $this->assertEquals("040", $value);
+        $this->assertEquals('040', $value);
     }
 
     /**
@@ -6087,61 +6091,61 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testTerritoryToAlpha3()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'territorytoalpha3');
+        $value  = Zend_Locale_Data::getList('de_AT', 'territorytoalpha3');
         $result = array('AAA' => 'AA', 'ASC' => 'AC', 'AND' => 'AD', 'ARE' => 'AE', 'AFG' => 'AF', 'ATG' => 'AG',
-            'AIA' => 'AI', 'ALB' => 'AL', 'ARM' => 'AM', 'ANT' => 'AN', 'AGO' => 'AO', 'ATA' => 'AQ',
-            'ARG' => 'AR', 'ASM' => 'AS', 'AUT' => 'AT', 'AUS' => 'AU', 'ABW' => 'AW', 'ALA' => 'AX',
-            'AZE' => 'AZ', 'BIH' => 'BA', 'BRB' => 'BB', 'BGD' => 'BD', 'BEL' => 'BE', 'BFA' => 'BF',
-            'BGR' => 'BG', 'BHR' => 'BH', 'BDI' => 'BI', 'BEN' => 'BJ', 'BLM' => 'BL', 'BMU' => 'BM',
-            'BRN' => 'BN', 'BOL' => 'BO', 'BES' => 'BQ', 'BRA' => 'BR', 'BHS' => 'BS', 'BTN' => 'BT', 'BUR' => 'BU',
-            'BVT' => 'BV', 'BWA' => 'BW', 'BLR' => 'BY', 'BLZ' => 'BZ', 'CAN' => 'CA', 'CCK' => 'CC',
-            'COD' => 'CD', 'CAF' => 'CF', 'COG' => 'CG', 'CHE' => 'CH', 'CIV' => 'CI', 'COK' => 'CK',
-            'CHL' => 'CL', 'CMR' => 'CM', 'CHN' => 'CN', 'COL' => 'CO', 'CPT' => 'CP', 'CRI' => 'CR', 'SCG' => 'CS',
-            'CUB' => 'CU', 'CPV' => 'CV', 'CUW' => 'CW', 'CXR' => 'CX', 'CYP' => 'CY', 'CZE' => 'CZ', 'DDR' => 'DD',
-            'DEU' => 'DE', 'DGA' => 'DG', 'DJI' => 'DJ', 'DNK' => 'DK', 'DMA' => 'DM', 'DOM' => 'DO', 'DZA' => 'DZ',
-            'ECU' => 'EC', 'EST' => 'EE', 'EGY' => 'EG', 'ESH' => 'EH', 'ERI' => 'ER', 'ESP' => 'ES',
-            'ETH' => 'ET', 'FIN' => 'FI', 'FJI' => 'FJ', 'FLK' => 'FK', 'FSM' => 'FM', 'FRO' => 'FO',
-            'FRA' => 'FR', 'FXX' => 'FX', 'GAB' => 'GA', 'GBR' => 'GB', 'GRD' => 'GD', 'GEO' => 'GE',
-            'GUF' => 'GF', 'GGY' => 'GG', 'GHA' => 'GH', 'GIB' => 'GI', 'GRL' => 'GL', 'GMB' => 'GM',
-            'GIN' => 'GN', 'GLP' => 'GP', 'GNQ' => 'GQ', 'GRC' => 'GR', 'SGS' => 'GS', 'GTM' => 'GT',
-            'GUM' => 'GU', 'GNB' => 'GW', 'GUY' => 'GY', 'HKG' => 'HK', 'HMD' => 'HM', 'HND' => 'HN',
-            'HRV' => 'HR', 'HTI' => 'HT', 'HUN' => 'HU', 'IDN' => 'ID', 'IRL' => 'IE', 'ISR' => 'IL',
-            'IMN' => 'IM', 'IND' => 'IN', 'IOT' => 'IO', 'IRQ' => 'IQ', 'IRN' => 'IR', 'ISL' => 'IS',
-            'ITA' => 'IT', 'JEY' => 'JE', 'JAM' => 'JM', 'JOR' => 'JO', 'JPN' => 'JP', 'KEN' => 'KE',
-            'KGZ' => 'KG', 'KHM' => 'KH', 'KIR' => 'KI', 'COM' => 'KM', 'KNA' => 'KN', 'PRK' => 'KP',
-            'KOR' => 'KR', 'KWT' => 'KW', 'CYM' => 'KY', 'KAZ' => 'KZ', 'LAO' => 'LA', 'LBN' => 'LB',
-            'LCA' => 'LC', 'LIE' => 'LI', 'LKA' => 'LK', 'LBR' => 'LR', 'LSO' => 'LS', 'LTU' => 'LT',
-            'LUX' => 'LU', 'LVA' => 'LV', 'LBY' => 'LY', 'MAR' => 'MA', 'MCO' => 'MC', 'MDA' => 'MD',
-            'MNE' => 'ME', 'MDG' => 'MG', 'MAF' => 'MF', 'MHL' => 'MH', 'MKD' => 'MK', 'MLI' => 'ML',
-            'MMR' => 'MM', 'MNG' => 'MN', 'MAC' => 'MO', 'MNP' => 'MP', 'MTQ' => 'MQ', 'MRT' => 'MR',
-            'MSR' => 'MS', 'MLT' => 'MT', 'MUS' => 'MU', 'MDV' => 'MV', 'MWI' => 'MW', 'MEX' => 'MX',
-            'MYS' => 'MY', 'MOZ' => 'MZ', 'NAM' => 'NA', 'NCL' => 'NC', 'NER' => 'NE', 'NFK' => 'NF',
-            'NGA' => 'NG', 'NIC' => 'NI', 'NLD' => 'NL', 'NOR' => 'NO', 'NPL' => 'NP', 'NRU' => 'NR',
-            'NTZ' => 'NT', 'NIU' => 'NU', 'NZL' => 'NZ', 'OMN' => 'OM', 'PAN' => 'PA', 'PER' => 'PE',
-            'PYF' => 'PF', 'PNG' => 'PG', 'PHL' => 'PH', 'PAK' => 'PK', 'POL' => 'PL', 'SPM' => 'PM',
-            'PCN' => 'PN', 'PRI' => 'PR', 'PSE' => 'PS', 'PRT' => 'PT', 'PLW' => 'PW', 'PRY' => 'PY',
-            'QAT' => 'QA', 'QMM' => 'QM', 'QNN' => 'QN', 'QOO' => 'QO', 'QPP' => 'QP', 'QQQ' => 'QQ',
-            'QRR' => 'QR', 'QSS' => 'QS', 'QTT' => 'QT', 'QVV' => 'QV', 'QWW' => 'QW', 'QUU' => 'EU',
-            'QXX' => 'QX', 'QYY' => 'QY', 'QZZ' => 'QZ', 'REU' => 'RE', 'ROU' => 'RO', 'SRB' => 'RS',
-            'RUS' => 'RU', 'RWA' => 'RW', 'SAU' => 'SA', 'SLB' => 'SB', 'SYC' => 'SC', 'SDN' => 'SD',
-            'SWE' => 'SE', 'SGP' => 'SG', 'SHN' => 'SH', 'SVN' => 'SI', 'SJM' => 'SJ', 'SVK' => 'SK',
-            'SLE' => 'SL', 'SMR' => 'SM', 'SEN' => 'SN', 'SOM' => 'SO', 'SUR' => 'SR', 'SSD' => 'SS', 'STP' => 'ST',
-            'SUN' => 'SU', 'SLV' => 'SV', 'SXM' => 'SX', 'SYR' => 'SY', 'SWZ' => 'SZ', 'TAA' => 'TA', 'TCA' => 'TC', 'TCD' => 'TD',
-            'ATF' => 'TF', 'TGO' => 'TG', 'THA' => 'TH', 'TJK' => 'TJ', 'TKL' => 'TK', 'TLS' => 'TL',
-            'TKM' => 'TM', 'TUN' => 'TN', 'TON' => 'TO', 'TMP' => 'TP', 'TUR' => 'TR', 'TTO' => 'TT',
-            'TUV' => 'TV', 'TWN' => 'TW', 'TZA' => 'TZ', 'UKR' => 'UA', 'UGA' => 'UG', 'UMI' => 'UM',
-            'USA' => 'US', 'URY' => 'UY', 'UZB' => 'UZ', 'VAT' => 'VA', 'VCT' => 'VC', 'VEN' => 'VE',
-            'VGB' => 'VG', 'VIR' => 'VI', 'VNM' => 'VN', 'VUT' => 'VU', 'WLF' => 'WF', 'WSM' => 'WS',
-            'XAA' => 'XA', 'XBB' => 'XB', 'XCC' => 'XC', 'XDD' => 'XD', 'XEE' => 'XE', 'XFF' => 'XF',
-            'XGG' => 'XG', 'XHH' => 'XH', 'XII' => 'XI', 'XJJ' => 'XJ', 'XKK' => 'XK', 'XLL' => 'XL',
-            'XMM' => 'XM', 'XNN' => 'XN', 'XOO' => 'XO', 'XPP' => 'XP', 'XQQ' => 'XQ', 'XRR' => 'XR',
-            'XSS' => 'XS', 'XTT' => 'XT', 'XUU' => 'XU', 'XVV' => 'XV', 'XWW' => 'XW', 'XXX' => 'XX',
-            'XYY' => 'XY', 'XZZ' => 'XZ', 'YMD' => 'YD', 'YEM' => 'YE', 'MYT' => 'YT', 'YUG' => 'YU',
-            'ZAF' => 'ZA', 'ZMB' => 'ZM', 'ZAR' => 'ZR', 'ZWE' => 'ZW', 'ZZZ' => 'ZZ');
+            'AIA'             => 'AI', 'ALB' => 'AL', 'ARM' => 'AM', 'ANT' => 'AN', 'AGO' => 'AO', 'ATA' => 'AQ',
+            'ARG'             => 'AR', 'ASM' => 'AS', 'AUT' => 'AT', 'AUS' => 'AU', 'ABW' => 'AW', 'ALA' => 'AX',
+            'AZE'             => 'AZ', 'BIH' => 'BA', 'BRB' => 'BB', 'BGD' => 'BD', 'BEL' => 'BE', 'BFA' => 'BF',
+            'BGR'             => 'BG', 'BHR' => 'BH', 'BDI' => 'BI', 'BEN' => 'BJ', 'BLM' => 'BL', 'BMU' => 'BM',
+            'BRN'             => 'BN', 'BOL' => 'BO', 'BES' => 'BQ', 'BRA' => 'BR', 'BHS' => 'BS', 'BTN' => 'BT', 'BUR' => 'BU',
+            'BVT'             => 'BV', 'BWA' => 'BW', 'BLR' => 'BY', 'BLZ' => 'BZ', 'CAN' => 'CA', 'CCK' => 'CC',
+            'COD'             => 'CD', 'CAF' => 'CF', 'COG' => 'CG', 'CHE' => 'CH', 'CIV' => 'CI', 'COK' => 'CK',
+            'CHL'             => 'CL', 'CMR' => 'CM', 'CHN' => 'CN', 'COL' => 'CO', 'CPT' => 'CP', 'CRI' => 'CR', 'SCG' => 'CS',
+            'CUB'             => 'CU', 'CPV' => 'CV', 'CUW' => 'CW', 'CXR' => 'CX', 'CYP' => 'CY', 'CZE' => 'CZ', 'DDR' => 'DD',
+            'DEU'             => 'DE', 'DGA' => 'DG', 'DJI' => 'DJ', 'DNK' => 'DK', 'DMA' => 'DM', 'DOM' => 'DO', 'DZA' => 'DZ',
+            'ECU'             => 'EC', 'EST' => 'EE', 'EGY' => 'EG', 'ESH' => 'EH', 'ERI' => 'ER', 'ESP' => 'ES',
+            'ETH'             => 'ET', 'FIN' => 'FI', 'FJI' => 'FJ', 'FLK' => 'FK', 'FSM' => 'FM', 'FRO' => 'FO',
+            'FRA'             => 'FR', 'FXX' => 'FX', 'GAB' => 'GA', 'GBR' => 'GB', 'GRD' => 'GD', 'GEO' => 'GE',
+            'GUF'             => 'GF', 'GGY' => 'GG', 'GHA' => 'GH', 'GIB' => 'GI', 'GRL' => 'GL', 'GMB' => 'GM',
+            'GIN'             => 'GN', 'GLP' => 'GP', 'GNQ' => 'GQ', 'GRC' => 'GR', 'SGS' => 'GS', 'GTM' => 'GT',
+            'GUM'             => 'GU', 'GNB' => 'GW', 'GUY' => 'GY', 'HKG' => 'HK', 'HMD' => 'HM', 'HND' => 'HN',
+            'HRV'             => 'HR', 'HTI' => 'HT', 'HUN' => 'HU', 'IDN' => 'ID', 'IRL' => 'IE', 'ISR' => 'IL',
+            'IMN'             => 'IM', 'IND' => 'IN', 'IOT' => 'IO', 'IRQ' => 'IQ', 'IRN' => 'IR', 'ISL' => 'IS',
+            'ITA'             => 'IT', 'JEY' => 'JE', 'JAM' => 'JM', 'JOR' => 'JO', 'JPN' => 'JP', 'KEN' => 'KE',
+            'KGZ'             => 'KG', 'KHM' => 'KH', 'KIR' => 'KI', 'COM' => 'KM', 'KNA' => 'KN', 'PRK' => 'KP',
+            'KOR'             => 'KR', 'KWT' => 'KW', 'CYM' => 'KY', 'KAZ' => 'KZ', 'LAO' => 'LA', 'LBN' => 'LB',
+            'LCA'             => 'LC', 'LIE' => 'LI', 'LKA' => 'LK', 'LBR' => 'LR', 'LSO' => 'LS', 'LTU' => 'LT',
+            'LUX'             => 'LU', 'LVA' => 'LV', 'LBY' => 'LY', 'MAR' => 'MA', 'MCO' => 'MC', 'MDA' => 'MD',
+            'MNE'             => 'ME', 'MDG' => 'MG', 'MAF' => 'MF', 'MHL' => 'MH', 'MKD' => 'MK', 'MLI' => 'ML',
+            'MMR'             => 'MM', 'MNG' => 'MN', 'MAC' => 'MO', 'MNP' => 'MP', 'MTQ' => 'MQ', 'MRT' => 'MR',
+            'MSR'             => 'MS', 'MLT' => 'MT', 'MUS' => 'MU', 'MDV' => 'MV', 'MWI' => 'MW', 'MEX' => 'MX',
+            'MYS'             => 'MY', 'MOZ' => 'MZ', 'NAM' => 'NA', 'NCL' => 'NC', 'NER' => 'NE', 'NFK' => 'NF',
+            'NGA'             => 'NG', 'NIC' => 'NI', 'NLD' => 'NL', 'NOR' => 'NO', 'NPL' => 'NP', 'NRU' => 'NR',
+            'NTZ'             => 'NT', 'NIU' => 'NU', 'NZL' => 'NZ', 'OMN' => 'OM', 'PAN' => 'PA', 'PER' => 'PE',
+            'PYF'             => 'PF', 'PNG' => 'PG', 'PHL' => 'PH', 'PAK' => 'PK', 'POL' => 'PL', 'SPM' => 'PM',
+            'PCN'             => 'PN', 'PRI' => 'PR', 'PSE' => 'PS', 'PRT' => 'PT', 'PLW' => 'PW', 'PRY' => 'PY',
+            'QAT'             => 'QA', 'QMM' => 'QM', 'QNN' => 'QN', 'QOO' => 'QO', 'QPP' => 'QP', 'QQQ' => 'QQ',
+            'QRR'             => 'QR', 'QSS' => 'QS', 'QTT' => 'QT', 'QVV' => 'QV', 'QWW' => 'QW', 'QUU' => 'EU',
+            'QXX'             => 'QX', 'QYY' => 'QY', 'QZZ' => 'QZ', 'REU' => 'RE', 'ROU' => 'RO', 'SRB' => 'RS',
+            'RUS'             => 'RU', 'RWA' => 'RW', 'SAU' => 'SA', 'SLB' => 'SB', 'SYC' => 'SC', 'SDN' => 'SD',
+            'SWE'             => 'SE', 'SGP' => 'SG', 'SHN' => 'SH', 'SVN' => 'SI', 'SJM' => 'SJ', 'SVK' => 'SK',
+            'SLE'             => 'SL', 'SMR' => 'SM', 'SEN' => 'SN', 'SOM' => 'SO', 'SUR' => 'SR', 'SSD' => 'SS', 'STP' => 'ST',
+            'SUN'             => 'SU', 'SLV' => 'SV', 'SXM' => 'SX', 'SYR' => 'SY', 'SWZ' => 'SZ', 'TAA' => 'TA', 'TCA' => 'TC', 'TCD' => 'TD',
+            'ATF'             => 'TF', 'TGO' => 'TG', 'THA' => 'TH', 'TJK' => 'TJ', 'TKL' => 'TK', 'TLS' => 'TL',
+            'TKM'             => 'TM', 'TUN' => 'TN', 'TON' => 'TO', 'TMP' => 'TP', 'TUR' => 'TR', 'TTO' => 'TT',
+            'TUV'             => 'TV', 'TWN' => 'TW', 'TZA' => 'TZ', 'UKR' => 'UA', 'UGA' => 'UG', 'UMI' => 'UM',
+            'USA'             => 'US', 'URY' => 'UY', 'UZB' => 'UZ', 'VAT' => 'VA', 'VCT' => 'VC', 'VEN' => 'VE',
+            'VGB'             => 'VG', 'VIR' => 'VI', 'VNM' => 'VN', 'VUT' => 'VU', 'WLF' => 'WF', 'WSM' => 'WS',
+            'XAA'             => 'XA', 'XBB' => 'XB', 'XCC' => 'XC', 'XDD' => 'XD', 'XEE' => 'XE', 'XFF' => 'XF',
+            'XGG'             => 'XG', 'XHH' => 'XH', 'XII' => 'XI', 'XJJ' => 'XJ', 'XKK' => 'XK', 'XLL' => 'XL',
+            'XMM'             => 'XM', 'XNN' => 'XN', 'XOO' => 'XO', 'XPP' => 'XP', 'XQQ' => 'XQ', 'XRR' => 'XR',
+            'XSS'             => 'XS', 'XTT' => 'XT', 'XUU' => 'XU', 'XVV' => 'XV', 'XWW' => 'XW', 'XXX' => 'XX',
+            'XYY'             => 'XY', 'XZZ' => 'XZ', 'YMD' => 'YD', 'YEM' => 'YE', 'MYT' => 'YT', 'YUG' => 'YU',
+            'ZAF'             => 'ZA', 'ZMB' => 'ZM', 'ZAR' => 'ZR', 'ZWE' => 'ZW', 'ZZZ' => 'ZZ');
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'territorytoalpha3', 'AUT');
-        $this->assertEquals("AT", $value);
+        $this->assertEquals('AT', $value);
     }
 
     /**
@@ -6150,7 +6154,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testAlpha3ToTerritory()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'alpha3toterritory');
+        $value  = Zend_Locale_Data::getList('de_AT', 'alpha3toterritory');
         $result = array(
             'AA' => 'AAA',
             'AC' => 'ASC',
@@ -6465,7 +6469,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'alpha3toterritory', 'AT');
-        $this->assertEquals("AUT", $value);
+        $this->assertEquals('AUT', $value);
     }
 
     /**
@@ -6474,165 +6478,165 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testPostalToTerritory()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'postaltoterritory');
+        $value  = Zend_Locale_Data::getList('de_AT', 'postaltoterritory');
         $result = array('GB' => 'GIR[ ]?0AA|((AB|AL|B|BA|BB|BD|BH|BL|BN|BR|BS|BT|CA|CB|CF|CH|CM|CO|CR|CT|CV|CW|DA|DD|DE|DG|DH|DL|DN|DT|DY|E|EC|EH|EN|EX|FK|FY|G|GL|GY|GU|HA|HD|HG|HP|HR|HS|HU|HX|IG|IM|IP|IV|JE|KA|KT|KW|KY|L|LA|LD|LE|LL|LN|LS|LU|M|ME|MK|ML|N|NE|NG|NN|NP|NR|NW|OL|OX|PA|PE|PH|PL|PO|PR|RG|RH|RM|S|SA|SE|SG|SK|SL|SM|SN|SO|SP|SR|SS|ST|SW|SY|TA|TD|TF|TN|TQ|TR|TS|TW|UB|W|WA|WC|WD|WF|WN|WR|WS|WV|YO|ZE)(\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}))|BFPO[ ]?\d{1,4}',
-            'JE' => 'JE\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}',
-            'GG' => 'GY\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}',
-            'IM' => 'IM\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}',
-            'US' => '\d{5}([ \-]\d{4})?',
-            'CA' => '[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ ]?\d[ABCEGHJ-NPRSTV-Z]\d',
-            'DE' => '\d{5}',
-            'JP' => '\d{3}-\d{4}',
-            'FR' => '\d{2}[ ]?\d{3}',
-            'AU' => '\d{4}',
-            'IT' => '\d{5}',
-            'CH' => '\d{4}',
-            'AT' => '\d{4}',
-            'ES' => '\d{5}',
-            'NL' => '\d{4}[ ]?[A-Z]{2}',
-            'BE' => '\d{4}',
-            'DK' => '\d{4}',
-            'SE' => '\d{3}[ ]?\d{2}',
-            'NO' => '\d{4}',
-            'BR' => '\d{5}[\-]?\d{3}',
-            'PT' => '\d{4}([\-]\d{3})?',
-            'FI' => '\d{5}',
-            'AX' => '22\d{3}',
-            'KR' => '\d{3}[\-]\d{3}',
-            'CN' => '\d{6}',
-            'TW' => '\d{3}(\d{2})?',
-            'SG' => '\d{6}',
-            'DZ' => '\d{5}',
-            'AD' => 'AD\d{3}',
-            'AR' => '([A-HJ-NP-Z])?\d{4}([A-Z]{3})?',
-            'AM' => '(37)?\d{4}',
-            'AZ' => '\d{4}',
-            'BH' => '((1[0-2]|[2-9])\d{2})?',
-            'BD' => '\d{4}',
-            'BB' => '(BB\d{5})?',
-            'BY' => '\d{6}',
-            'BM' => '[A-Z]{2}[ ]?[A-Z0-9]{2}',
-            'BA' => '\d{5}',
-            'IO' => 'BBND 1ZZ',
-            'BN' => '[A-Z]{2}[ ]?\d{4}',
-            'BG' => '\d{4}',
-            'KH' => '\d{5}',
-            'CV' => '\d{4}',
-            'CL' => '\d{7}',
-            'CR' => '\d{4,5}|\d{3}-\d{4}',
-            'HR' => '\d{5}',
-            'CY' => '\d{4}',
-            'CZ' => '\d{3}[ ]?\d{2}',
-            'DO' => '\d{5}',
-            'EC' => '([A-Z]\d{4}[A-Z]|(?:[A-Z]{2})?\d{6})?',
-            'EG' => '\d{5}',
-            'EE' => '\d{5}',
-            'FO' => '\d{3}',
-            'GE' => '\d{4}',
-            'GR' => '\d{3}[ ]?\d{2}',
-            'GL' => '39\d{2}',
-            'GT' => '\d{5}',
-            'HT' => '\d{4}',
-            'HN' => '(?:\d{5})?',
-            'HU' => '\d{4}',
-            'IS' => '\d{3}',
-            'IN' => '\d{6}',
-            'ID' => '\d{5}',
-            'IL' => '\d{5}',
-            'JO' => '\d{5}',
-            'KZ' => '\d{6}',
-            'KE' => '\d{5}',
-            'KW' => '\d{5}',
-            'LA' => '\d{5}',
-            'LV' => '\d{4}',
-            'LB' => '(\d{4}([ ]?\d{4})?)?',
-            'LI' => '(948[5-9])|(949[0-7])',
-            'LT' => '\d{5}',
-            'LU' => '\d{4}',
-            'MK' => '\d{4}',
-            'MY' => '\d{5}',
-            'MV' => '\d{5}',
-            'MT' => '[A-Z]{3}[ ]?\d{2,4}',
-            'MU' => '(\d{3}[A-Z]{2}\d{3})?',
-            'MX' => '\d{5}',
-            'MD' => '\d{4}',
-            'MC' => '980\d{2}',
-            'MA' => '\d{5}',
-            'NP' => '\d{5}',
-            'NZ' => '\d{4}',
-            'NI' => '((\d{4}-)?\d{3}-\d{3}(-\d{1})?)?',
-            'NG' => '(\d{6})?',
-            'OM' => '(PC )?\d{3}',
-            'PK' => '\d{5}',
-            'PY' => '\d{4}',
-            'PH' => '\d{4}',
-            'PL' => '\d{2}-\d{3}',
-            'PR' => '00[679]\d{2}([ \-]\d{4})?',
-            'RO' => '\d{6}',
-            'RU' => '\d{6}',
-            'SM' => '4789\d',
-            'SA' => '\d{5}',
-            'SN' => '\d{5}',
-            'SK' => '\d{3}[ ]?\d{2}',
-            'SI' => '\d{4}',
-            'ZA' => '\d{4}',
-            'LK' => '\d{5}',
-            'TJ' => '\d{6}',
-            'TH' => '\d{5}',
-            'TN' => '\d{4}',
-            'TR' => '\d{5}',
-            'TM' => '\d{6}',
-            'UA' => '\d{5}',
-            'UY' => '\d{5}',
-            'UZ' => '\d{6}',
-            'VA' => '00120',
-            'VE' => '\d{4}',
-            'ZM' => '\d{5}',
-            'AS' => '96799',
-            'CC' => '6799',
-            'CK' => '\d{4}',
-            'RS' => '\d{6}',
-            'ME' => '8\d{4}',
-            'CS' => '\d{5}',
-            'YU' => '\d{5}',
-            'CX' => '6798',
-            'ET' => '\d{4}',
-            'FK' => 'FIQQ 1ZZ',
-            'NF' => '2899',
-            'FM' => '(9694[1-4])([ \-]\d{4})?',
-            'GF' => '9[78]3\d{2}',
-            'GN' => '\d{3}',
-            'GP' => '9[78][01]\d{2}',
-            'GS' => 'SIQQ 1ZZ',
-            'GU' => '969[123]\d([ \-]\d{4})?',
-            'GW' => '\d{4}',
-            'HM' => '\d{4}',
-            'IQ' => '\d{5}',
-            'KG' => '\d{6}',
-            'LR' => '\d{4}',
-            'LS' => '\d{3}',
-            'MG' => '\d{3}',
-            'MH' => '969[67]\d([ \-]\d{4})?',
-            'MN' => '\d{6}',
-            'MP' => '9695[012]([ \-]\d{4})?',
-            'MQ' => '9[78]2\d{2}',
-            'NC' => '988\d{2}',
-            'NE' => '\d{4}',
-            'VI' => '008(([0-4]\d)|(5[01]))([ \-]\d{4})?',
-            'PF' => '987\d{2}',
-            'PG' => '\d{3}',
-            'PM' => '9[78]5\d{2}',
-            'PN' => 'PCRN 1ZZ',
-            'PW' => '96940',
-            'RE' => '9[78]4\d{2}',
-            'SH' => '(ASCN|STHL) 1ZZ',
-            'SJ' => '\d{4}',
-            'SO' => '\d{5}',
-            'SZ' => '[HLMS]\d{3}',
-            'TC' => 'TKCA 1ZZ',
-            'WF' => '986\d{2}',
-            'XK' => '\d{5}',
-            'YT' => '976\d{2}'
+            'JE'             => 'JE\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}',
+            'GG'             => 'GY\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}',
+            'IM'             => 'IM\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}',
+            'US'             => '\d{5}([ \-]\d{4})?',
+            'CA'             => '[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ ]?\d[ABCEGHJ-NPRSTV-Z]\d',
+            'DE'             => '\d{5}',
+            'JP'             => '\d{3}-\d{4}',
+            'FR'             => '\d{2}[ ]?\d{3}',
+            'AU'             => '\d{4}',
+            'IT'             => '\d{5}',
+            'CH'             => '\d{4}',
+            'AT'             => '\d{4}',
+            'ES'             => '\d{5}',
+            'NL'             => '\d{4}[ ]?[A-Z]{2}',
+            'BE'             => '\d{4}',
+            'DK'             => '\d{4}',
+            'SE'             => '\d{3}[ ]?\d{2}',
+            'NO'             => '\d{4}',
+            'BR'             => '\d{5}[\-]?\d{3}',
+            'PT'             => '\d{4}([\-]\d{3})?',
+            'FI'             => '\d{5}',
+            'AX'             => '22\d{3}',
+            'KR'             => '\d{3}[\-]\d{3}',
+            'CN'             => '\d{6}',
+            'TW'             => '\d{3}(\d{2})?',
+            'SG'             => '\d{6}',
+            'DZ'             => '\d{5}',
+            'AD'             => 'AD\d{3}',
+            'AR'             => '([A-HJ-NP-Z])?\d{4}([A-Z]{3})?',
+            'AM'             => '(37)?\d{4}',
+            'AZ'             => '\d{4}',
+            'BH'             => '((1[0-2]|[2-9])\d{2})?',
+            'BD'             => '\d{4}',
+            'BB'             => '(BB\d{5})?',
+            'BY'             => '\d{6}',
+            'BM'             => '[A-Z]{2}[ ]?[A-Z0-9]{2}',
+            'BA'             => '\d{5}',
+            'IO'             => 'BBND 1ZZ',
+            'BN'             => '[A-Z]{2}[ ]?\d{4}',
+            'BG'             => '\d{4}',
+            'KH'             => '\d{5}',
+            'CV'             => '\d{4}',
+            'CL'             => '\d{7}',
+            'CR'             => '\d{4,5}|\d{3}-\d{4}',
+            'HR'             => '\d{5}',
+            'CY'             => '\d{4}',
+            'CZ'             => '\d{3}[ ]?\d{2}',
+            'DO'             => '\d{5}',
+            'EC'             => '([A-Z]\d{4}[A-Z]|(?:[A-Z]{2})?\d{6})?',
+            'EG'             => '\d{5}',
+            'EE'             => '\d{5}',
+            'FO'             => '\d{3}',
+            'GE'             => '\d{4}',
+            'GR'             => '\d{3}[ ]?\d{2}',
+            'GL'             => '39\d{2}',
+            'GT'             => '\d{5}',
+            'HT'             => '\d{4}',
+            'HN'             => '(?:\d{5})?',
+            'HU'             => '\d{4}',
+            'IS'             => '\d{3}',
+            'IN'             => '\d{6}',
+            'ID'             => '\d{5}',
+            'IL'             => '\d{5}',
+            'JO'             => '\d{5}',
+            'KZ'             => '\d{6}',
+            'KE'             => '\d{5}',
+            'KW'             => '\d{5}',
+            'LA'             => '\d{5}',
+            'LV'             => '\d{4}',
+            'LB'             => '(\d{4}([ ]?\d{4})?)?',
+            'LI'             => '(948[5-9])|(949[0-7])',
+            'LT'             => '\d{5}',
+            'LU'             => '\d{4}',
+            'MK'             => '\d{4}',
+            'MY'             => '\d{5}',
+            'MV'             => '\d{5}',
+            'MT'             => '[A-Z]{3}[ ]?\d{2,4}',
+            'MU'             => '(\d{3}[A-Z]{2}\d{3})?',
+            'MX'             => '\d{5}',
+            'MD'             => '\d{4}',
+            'MC'             => '980\d{2}',
+            'MA'             => '\d{5}',
+            'NP'             => '\d{5}',
+            'NZ'             => '\d{4}',
+            'NI'             => '((\d{4}-)?\d{3}-\d{3}(-\d{1})?)?',
+            'NG'             => '(\d{6})?',
+            'OM'             => '(PC )?\d{3}',
+            'PK'             => '\d{5}',
+            'PY'             => '\d{4}',
+            'PH'             => '\d{4}',
+            'PL'             => '\d{2}-\d{3}',
+            'PR'             => '00[679]\d{2}([ \-]\d{4})?',
+            'RO'             => '\d{6}',
+            'RU'             => '\d{6}',
+            'SM'             => '4789\d',
+            'SA'             => '\d{5}',
+            'SN'             => '\d{5}',
+            'SK'             => '\d{3}[ ]?\d{2}',
+            'SI'             => '\d{4}',
+            'ZA'             => '\d{4}',
+            'LK'             => '\d{5}',
+            'TJ'             => '\d{6}',
+            'TH'             => '\d{5}',
+            'TN'             => '\d{4}',
+            'TR'             => '\d{5}',
+            'TM'             => '\d{6}',
+            'UA'             => '\d{5}',
+            'UY'             => '\d{5}',
+            'UZ'             => '\d{6}',
+            'VA'             => '00120',
+            'VE'             => '\d{4}',
+            'ZM'             => '\d{5}',
+            'AS'             => '96799',
+            'CC'             => '6799',
+            'CK'             => '\d{4}',
+            'RS'             => '\d{6}',
+            'ME'             => '8\d{4}',
+            'CS'             => '\d{5}',
+            'YU'             => '\d{5}',
+            'CX'             => '6798',
+            'ET'             => '\d{4}',
+            'FK'             => 'FIQQ 1ZZ',
+            'NF'             => '2899',
+            'FM'             => '(9694[1-4])([ \-]\d{4})?',
+            'GF'             => '9[78]3\d{2}',
+            'GN'             => '\d{3}',
+            'GP'             => '9[78][01]\d{2}',
+            'GS'             => 'SIQQ 1ZZ',
+            'GU'             => '969[123]\d([ \-]\d{4})?',
+            'GW'             => '\d{4}',
+            'HM'             => '\d{4}',
+            'IQ'             => '\d{5}',
+            'KG'             => '\d{6}',
+            'LR'             => '\d{4}',
+            'LS'             => '\d{3}',
+            'MG'             => '\d{3}',
+            'MH'             => '969[67]\d([ \-]\d{4})?',
+            'MN'             => '\d{6}',
+            'MP'             => '9695[012]([ \-]\d{4})?',
+            'MQ'             => '9[78]2\d{2}',
+            'NC'             => '988\d{2}',
+            'NE'             => '\d{4}',
+            'VI'             => '008(([0-4]\d)|(5[01]))([ \-]\d{4})?',
+            'PF'             => '987\d{2}',
+            'PG'             => '\d{3}',
+            'PM'             => '9[78]5\d{2}',
+            'PN'             => 'PCRN 1ZZ',
+            'PW'             => '96940',
+            'RE'             => '9[78]4\d{2}',
+            'SH'             => '(ASCN|STHL) 1ZZ',
+            'SJ'             => '\d{4}',
+            'SO'             => '\d{5}',
+            'SZ'             => '[HLMS]\d{3}',
+            'TC'             => 'TKCA 1ZZ',
+            'WF'             => '986\d{2}',
+            'XK'             => '\d{5}',
+            'YT'             => '976\d{2}'
         );
         $this->assertEquals($result, $value);
 
@@ -6646,55 +6650,55 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testNumberingSystem()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'numberingsystem');
+        $value  = Zend_Locale_Data::getList('de_AT', 'numberingsystem');
         $result = array(
-            'arab' => '٠١٢٣٤٥٦٧٨٩',
-            'arabext' => '۰۱۲۳۴۵۶۷۸۹',
-            'bali' => '᭐᭑᭒᭓᭔᭕᭖᭗᭘᭙',
-            'beng' => '০১২৩৪৫৬৭৮৯',
-            'brah' => '𑁦𑁧𑁨𑁩𑁪𑁫𑁬𑁭𑁮𑁯',
-            'cakm' => '𑄶𑄷𑄸𑄹𑄺𑄻𑄼𑄽𑄾𑄿',
-            'cham' => '꩐꩑꩒꩓꩔꩕꩖꩗꩘꩙',
-            'deva' => '०१२३४५६७८९',
+            'arab'     => '٠١٢٣٤٥٦٧٨٩',
+            'arabext'  => '۰۱۲۳۴۵۶۷۸۹',
+            'bali'     => '᭐᭑᭒᭓᭔᭕᭖᭗᭘᭙',
+            'beng'     => '০১২৩৪৫৬৭৮৯',
+            'brah'     => '𑁦𑁧𑁨𑁩𑁪𑁫𑁬𑁭𑁮𑁯',
+            'cakm'     => '𑄶𑄷𑄸𑄹𑄺𑄻𑄼𑄽𑄾𑄿',
+            'cham'     => '꩐꩑꩒꩓꩔꩕꩖꩗꩘꩙',
+            'deva'     => '०१२३४५६७८९',
             'fullwide' => '０１２３４５６７８９',
-            'gujr' => '૦૧૨૩૪૫૬૭૮૯',
-            'guru' => '੦੧੨੩੪੫੬੭੮੯',
-            'hanidec' => '〇一二三四五六七八九',
-            'java' => '꧐꧑꧒꧓꧔꧕꧖꧗꧘꧙',
-            'kali' => '꤀꤁꤂꤃꤄꤅꤆꤇꤈꤉',
-            'khmr' => "០១២៣៤៥៦៧៨៩",
-            'knda' => '೦೧೨೩೪೫೬೭೮೯',
-            'lana' => '᪀᪁᪂᪃᪄᪅᪆᪇᪈᪉',
+            'gujr'     => '૦૧૨૩૪૫૬૭૮૯',
+            'guru'     => '੦੧੨੩੪੫੬੭੮੯',
+            'hanidec'  => '〇一二三四五六七八九',
+            'java'     => '꧐꧑꧒꧓꧔꧕꧖꧗꧘꧙',
+            'kali'     => '꤀꤁꤂꤃꤄꤅꤆꤇꤈꤉',
+            'khmr'     => '០១២៣៤៥៦៧៨៩',
+            'knda'     => '೦೧೨೩೪೫೬೭೮೯',
+            'lana'     => '᪀᪁᪂᪃᪄᪅᪆᪇᪈᪉',
             'lanatham' => '᪐᪑᪒᪓᪔᪕᪖᪗᪘᪙',
-            'laoo' => '໐໑໒໓໔໕໖໗໘໙',
-            'latn' => '0123456789',
-            'lepc' => '᱀᱁᱂᱃᱄᱅᱆᱇᱈᱉',
-            'limb' => '᥆᥇᥈᥉᥊᥋᥌᥍᥎᥏',
-            'mlym' => '൦൧൨൩൪൫൬൭൮൯',
-            'mong' => "᠐᠑᠒᠓᠔᠕᠖᠗᠘᠙",
-            'mtei' => '꯰꯱꯲꯳꯴꯵꯶꯷꯸꯹',
-            'mymr' => "၀၁၂၃၄၅၆၇၈၉",
-            'mymrshan' => "႐႑႒႓႔႕႖႗႘႙",
-            'nkoo' => '߀߁߂߃߄߅߆߇߈߉',
-            'olck' => '᱐᱑᱒᱓᱔᱕᱖᱗᱘᱙',
-            'orya' => '୦୧୨୩୪୫୬୭୮୯',
-            'osma' => '𐒠𐒡𐒢𐒣𐒤𐒥𐒦𐒧𐒨𐒩',
-            'saur' => '꣐꣑꣒꣓꣔꣕꣖꣗꣘꣙',
-            'shrd' => '𑇐𑇑𑇒𑇓𑇔𑇕𑇖𑇗𑇘𑇙',
-            'sora' => '𑃰𑃱𑃲𑃳𑃴𑃵𑃶𑃷𑃸𑃹',
-            'sund' => '᮰᮱᮲᮳᮴᮵᮶᮷᮸᮹',
-            'takr' => '𑛀𑛁𑛂𑛃𑛄𑛅𑛆𑛇𑛈𑛉',
-            'talu' => '᧐᧑᧒᧓᧔᧕᧖᧗᧘᧙',
-            'tamldec' => '௦௧௨௩௪௫௬௭௮௯',
-            'telu' => '౦౧౨౩౪౫౬౭౮౯',
-            'thai' => '๐๑๒๓๔๕๖๗๘๙',
-            'tibt' => '༠༡༢༣༤༥༦༧༨༩',
-            'vaii' => '꘠꘡꘢꘣꘤꘥꘦꘧꘨꘩'
+            'laoo'     => '໐໑໒໓໔໕໖໗໘໙',
+            'latn'     => '0123456789',
+            'lepc'     => '᱀᱁᱂᱃᱄᱅᱆᱇᱈᱉',
+            'limb'     => '᥆᥇᥈᥉᥊᥋᥌᥍᥎᥏',
+            'mlym'     => '൦൧൨൩൪൫൬൭൮൯',
+            'mong'     => '᠐᠑᠒᠓᠔᠕᠖᠗᠘᠙',
+            'mtei'     => '꯰꯱꯲꯳꯴꯵꯶꯷꯸꯹',
+            'mymr'     => '၀၁၂၃၄၅၆၇၈၉',
+            'mymrshan' => '႐႑႒႓႔႕႖႗႘႙',
+            'nkoo'     => '߀߁߂߃߄߅߆߇߈߉',
+            'olck'     => '᱐᱑᱒᱓᱔᱕᱖᱗᱘᱙',
+            'orya'     => '୦୧୨୩୪୫୬୭୮୯',
+            'osma'     => '𐒠𐒡𐒢𐒣𐒤𐒥𐒦𐒧𐒨𐒩',
+            'saur'     => '꣐꣑꣒꣓꣔꣕꣖꣗꣘꣙',
+            'shrd'     => '𑇐𑇑𑇒𑇓𑇔𑇕𑇖𑇗𑇘𑇙',
+            'sora'     => '𑃰𑃱𑃲𑃳𑃴𑃵𑃶𑃷𑃸𑃹',
+            'sund'     => '᮰᮱᮲᮳᮴᮵᮶᮷᮸᮹',
+            'takr'     => '𑛀𑛁𑛂𑛃𑛄𑛅𑛆𑛇𑛈𑛉',
+            'talu'     => '᧐᧑᧒᧓᧔᧕᧖᧗᧘᧙',
+            'tamldec'  => '௦௧௨௩௪௫௬௭௮௯',
+            'telu'     => '౦౧౨౩౪౫౬౭౮౯',
+            'thai'     => '๐๑๒๓๔๕๖๗๘๙',
+            'tibt'     => '༠༡༢༣༤༥༦༧༨༩',
+            'vaii'     => '꘠꘡꘢꘣꘤꘥꘦꘧꘨꘩'
         );
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'numberingsystem', 'Arab');
-        $this->assertEquals("٠١٢٣٤٥٦٧٨٩", $value);
+        $this->assertEquals('٠١٢٣٤٥٦٧٨٩', $value);
     }
 
     /**
@@ -6709,7 +6713,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals('Æ', $value['AE']);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'chartofallback', '(C)');
-        $this->assertEquals("©", $value);
+        $this->assertEquals('©', $value);
     }
 
     /**
@@ -6748,7 +6752,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testDateItem()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'dateitem');
+        $value  = Zend_Locale_Data::getList('de_AT', 'dateitem');
         $result = array(
             'd'       => 'd',
             'Ed'      => 'E, d.',
@@ -6791,7 +6795,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         );
         $this->assertEquals($result, $value, var_export($value, 1));
 
-        $value = Zend_Locale_Data::getList('de_AT', 'dateitem', 'gregorian');
+        $value  = Zend_Locale_Data::getList('de_AT', 'dateitem', 'gregorian');
         $result = array(
             'd'       => 'd',
             'Ed'      => 'E, d.',
@@ -6835,7 +6839,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($result, $value, var_export($value, 1));
 
         $value = Zend_Locale_Data::getContent('de_AT', 'dateitem', 'MMMd');
-        $this->assertEquals("d. MMM", $value);
+        $this->assertEquals('d. MMM', $value);
     }
 
     /**
@@ -6844,160 +6848,160 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testDateInterval()
     {
-        $value = Zend_Locale_Data::getList('de_AT', 'dateinterval');
+        $value  = Zend_Locale_Data::getList('de_AT', 'dateinterval');
         $result = array(
             'MMMd' => array(
-                'd' => "dd.-dd. MMM",
-                'M' => "dd. MMM - dd. MMM"),
+                'd' => 'dd.-dd. MMM',
+                'M' => 'dd. MMM - dd. MMM'),
             'MMMEd' => array(
-                'd' => "E, dd. - E, dd. MMM",
-                'M' => "E, dd. MMM - E, dd. MMM"),
+                'd' => 'E, dd. - E, dd. MMM',
+                'M' => 'E, dd. MMM - E, dd. MMM'),
             'yMMMd' => array(
-                'd' => "dd.-dd. MMM y",
-                'M' => "dd. MMM - dd. MMM y",
-                'y' => "dd. MMM y - dd. MMM y"),
+                'd' => 'dd.-dd. MMM y',
+                'M' => 'dd. MMM - dd. MMM y',
+                'y' => 'dd. MMM y - dd. MMM y'),
             'yMMMEd' => array(
-                'd' => "E, dd. - E, dd. MMM y",
-                'M' => "E, dd. MMM - E, dd. MMM y",
-                'y' => "E, dd. MMM y - E, dd. MMM y"),
+                'd' => 'E, dd. - E, dd. MMM y',
+                'M' => 'E, dd. MMM - E, dd. MMM y',
+                'y' => 'E, dd. MMM y - E, dd. MMM y'),
             'd' => array(
-                'd' => "d.-d."),
+                'd' => 'd.-d.'),
             'h' => array(
-                'a' => "h a - h a",
-                'h' => "h-h a"),
+                'a' => 'h a - h a',
+                'h' => 'h-h a'),
             'H' => array(
                 'H' => "HH-HH 'Uhr'"),
             'hm' => array(
-                'a' => "h:mm a - h:mm a",
-                'h' => "h:mm-h:mm a",
-                'm' => "h:mm-h:mm a"),
+                'a' => 'h:mm a - h:mm a',
+                'h' => 'h:mm-h:mm a',
+                'm' => 'h:mm-h:mm a'),
             'Hm' => array(
-                'H' => "HH:mm-HH:mm",
-                'm' => "HH:mm-HH:mm"),
+                'H' => 'HH:mm-HH:mm',
+                'm' => 'HH:mm-HH:mm'),
             'hmv' => array(
-                'a' => "h:mm a - h:mm a v",
-                'h' => "h:mm-h:mm a v",
-                'm' => "h:mm-h:mm a v"),
+                'a' => 'h:mm a - h:mm a v',
+                'h' => 'h:mm-h:mm a v',
+                'm' => 'h:mm-h:mm a v'),
             'Hmv' => array(
-                'H' => "HH:mm-HH:mm v",
-                'm' => "HH:mm-HH:mm v"),
+                'H' => 'HH:mm-HH:mm v',
+                'm' => 'HH:mm-HH:mm v'),
             'hv' => array(
-                'a' => "h a - h a v",
-                'h' => "h-h a v"),
+                'a' => 'h a - h a v',
+                'h' => 'h-h a v'),
             'Hv' => array(
                 'H' => "HH-HH 'Uhr' v"),
             'M' => array(
-                'M' => "M.-M."),
+                'M' => 'M.-M.'),
             'Md' => array(
-                'd' => "dd.MM. - dd.MM.",
-                'M' => "dd.MM. - dd.MM."),
+                'd' => 'dd.MM. - dd.MM.',
+                'M' => 'dd.MM. - dd.MM.'),
             'MEd' => array(
-                'd' => "E, dd.MM. - E, dd.MM.",
-                'M' => "E, dd.MM. - E, dd.MM."),
+                'd' => 'E, dd.MM. - E, dd.MM.',
+                'M' => 'E, dd.MM. - E, dd.MM.'),
             'MMM' => array(
-                'M' => "MMM-MMM"),
+                'M' => 'MMM-MMM'),
             'MMMM' => array(
-                'M' => "LLLL-LLLL"),
+                'M' => 'LLLL-LLLL'),
             'y' => array(
-                'y' => "y-y"),
+                'y' => 'y-y'),
             'yM' => array(
-                'M' => "MM.y - MM.y",
-                'y' => "MM.y - MM.y"),
+                'M' => 'MM.y - MM.y',
+                'y' => 'MM.y - MM.y'),
             'yMd' => array(
-                'd' => "dd.MM.y - dd.MM.y",
-                'M' => "dd.MM.y - dd.MM.y",
-                'y' => "dd.MM.y - dd.MM.y"),
+                'd' => 'dd.MM.y - dd.MM.y',
+                'M' => 'dd.MM.y - dd.MM.y',
+                'y' => 'dd.MM.y - dd.MM.y'),
             'yMEd' => array(
-                'd' => "E, dd.MM.y - E, dd.MM.y",
-                'M' => "E, dd.MM.y - E, dd.MM.y",
-                'y' => "E, dd.MM.y - E, dd.MM.y"),
+                'd' => 'E, dd.MM.y - E, dd.MM.y',
+                'M' => 'E, dd.MM.y - E, dd.MM.y',
+                'y' => 'E, dd.MM.y - E, dd.MM.y'),
             'yMMM' => array(
-                'M' => "MMM-MMM y",
-                'y' => "MMM y - MMM y"),
+                'M' => 'MMM-MMM y',
+                'y' => 'MMM y - MMM y'),
             'yMMMM' => array(
-                'M' => "MMMM-MMMM y",
-                'y' => "MMMM y - MMMM y")
+                'M' => 'MMMM-MMMM y',
+                'y' => 'MMMM y - MMMM y')
         );
         $this->assertEquals($result, $value);
 
-        $value = Zend_Locale_Data::getList('de_AT', 'dateinterval', 'gregorian');
+        $value  = Zend_Locale_Data::getList('de_AT', 'dateinterval', 'gregorian');
         $result = array(
             'MMMd' => array(
-                'd' => "dd.-dd. MMM",
-                'M' => "dd. MMM - dd. MMM"),
+                'd' => 'dd.-dd. MMM',
+                'M' => 'dd. MMM - dd. MMM'),
             'MMMEd' => array(
-                'd' => "E, dd. - E, dd. MMM",
-                'M' => "E, dd. MMM - E, dd. MMM"),
+                'd' => 'E, dd. - E, dd. MMM',
+                'M' => 'E, dd. MMM - E, dd. MMM'),
             'yMMMd' => array(
-                'd' => "dd.-dd. MMM y",
-                'M' => "dd. MMM - dd. MMM y",
-                'y' => "dd. MMM y - dd. MMM y"),
+                'd' => 'dd.-dd. MMM y',
+                'M' => 'dd. MMM - dd. MMM y',
+                'y' => 'dd. MMM y - dd. MMM y'),
             'yMMMEd' => array(
-                'd' => "E, dd. - E, dd. MMM y",
-                'M' => "E, dd. MMM - E, dd. MMM y",
-                'y' => "E, dd. MMM y - E, dd. MMM y"),
+                'd' => 'E, dd. - E, dd. MMM y',
+                'M' => 'E, dd. MMM - E, dd. MMM y',
+                'y' => 'E, dd. MMM y - E, dd. MMM y'),
             'd' => array(
-                'd' => "d.-d."),
+                'd' => 'd.-d.'),
             'h' => array(
-                'a' => "h a - h a",
-                'h' => "h-h a"),
+                'a' => 'h a - h a',
+                'h' => 'h-h a'),
             'H' => array(
                 'H' => "HH-HH 'Uhr'"),
             'hm' => array(
-                'a' => "h:mm a - h:mm a",
-                'h' => "h:mm-h:mm a",
-                'm' => "h:mm-h:mm a"),
+                'a' => 'h:mm a - h:mm a',
+                'h' => 'h:mm-h:mm a',
+                'm' => 'h:mm-h:mm a'),
             'Hm' => array(
-                'H' => "HH:mm-HH:mm",
-                'm' => "HH:mm-HH:mm"),
+                'H' => 'HH:mm-HH:mm',
+                'm' => 'HH:mm-HH:mm'),
             'hmv' => array(
-                'a' => "h:mm a - h:mm a v",
-                'h' => "h:mm-h:mm a v",
-                'm' => "h:mm-h:mm a v"),
+                'a' => 'h:mm a - h:mm a v',
+                'h' => 'h:mm-h:mm a v',
+                'm' => 'h:mm-h:mm a v'),
             'Hmv' => array(
-                'H' => "HH:mm-HH:mm v",
-                'm' => "HH:mm-HH:mm v"),
+                'H' => 'HH:mm-HH:mm v',
+                'm' => 'HH:mm-HH:mm v'),
             'hv' => array(
-                'a' => "h a - h a v",
-                'h' => "h-h a v"),
+                'a' => 'h a - h a v',
+                'h' => 'h-h a v'),
             'Hv' => array(
                 'H' => "HH-HH 'Uhr' v"),
             'M' => array(
-                'M' => "M.-M."),
+                'M' => 'M.-M.'),
             'Md' => array(
-                'd' => "dd.MM. - dd.MM.",
-                'M' => "dd.MM. - dd.MM."),
+                'd' => 'dd.MM. - dd.MM.',
+                'M' => 'dd.MM. - dd.MM.'),
             'MEd' => array(
-                'd' => "E, dd.MM. - E, dd.MM.",
-                'M' => "E, dd.MM. - E, dd.MM."),
+                'd' => 'E, dd.MM. - E, dd.MM.',
+                'M' => 'E, dd.MM. - E, dd.MM.'),
             'MMM' => array(
-                'M' => "MMM-MMM"),
+                'M' => 'MMM-MMM'),
             'MMMM' => array(
-                'M' => "LLLL-LLLL"),
+                'M' => 'LLLL-LLLL'),
             'y' => array(
-                'y' => "y-y"),
+                'y' => 'y-y'),
             'yM' => array(
-                'M' => "MM.y - MM.y",
-                'y' => "MM.y - MM.y"),
+                'M' => 'MM.y - MM.y',
+                'y' => 'MM.y - MM.y'),
             'yMd' => array(
-                'd' => "dd.MM.y - dd.MM.y",
-                'M' => "dd.MM.y - dd.MM.y",
-                'y' => "dd.MM.y - dd.MM.y"),
+                'd' => 'dd.MM.y - dd.MM.y',
+                'M' => 'dd.MM.y - dd.MM.y',
+                'y' => 'dd.MM.y - dd.MM.y'),
             'yMEd' => array(
-                'd' => "E, dd.MM.y - E, dd.MM.y",
-                'M' => "E, dd.MM.y - E, dd.MM.y",
-                'y' => "E, dd.MM.y - E, dd.MM.y"),
+                'd' => 'E, dd.MM.y - E, dd.MM.y',
+                'M' => 'E, dd.MM.y - E, dd.MM.y',
+                'y' => 'E, dd.MM.y - E, dd.MM.y'),
             'yMMM' => array(
-                'M' => "MMM-MMM y",
-                'y' => "MMM y - MMM y"),
+                'M' => 'MMM-MMM y',
+                'y' => 'MMM y - MMM y'),
             'yMMMM' => array(
-                'M' => "MMMM-MMMM y",
-                'y' => "MMMM y - MMMM y")
+                'M' => 'MMMM-MMMM y',
+                'y' => 'MMMM y - MMMM y')
         );
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'dateinterval', array('gregorian', 'yMMMM', 'y'));
-        $this->assertEquals("MMMM y - MMMM y", $value);
+        $this->assertEquals('MMMM y - MMMM y', $value);
     }
 
     /**
@@ -7008,155 +7012,155 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     {
         $value  = Zend_Locale_Data::getList('de_AT', 'unit');
         $result = array(
-            'acceleration-g-force'     => array(
+            'acceleration-g-force' => array(
                 'one'   => '{0}-fache Erdbeschleunigung',
                 'other' => '{0}-fache Erdbeschleunigung',
             ),
-            'angle-arc-minute'         => array(
+            'angle-arc-minute' => array(
                 'one'   => '{0} Winkelminute',
                 'other' => '{0} Winkelminuten',
             ),
-            'angle-arc-second'         => array(
+            'angle-arc-second' => array(
                 'one'   => '{0} Winkelsekunde',
                 'other' => '{0} Winkelsekunden',
             ),
-            'angle-degree'             => array(
+            'angle-degree' => array(
                 'one'   => '{0} Grad',
                 'other' => '{0} Grad',
             ),
-            'area-acre'                => array(
+            'area-acre' => array(
                 'one'   => '{0} Acre',
                 'other' => '{0} Acres',
             ),
-            'area-hectare'             => array(
+            'area-hectare' => array(
                 'one'   => '{0} Hektar',
                 'other' => '{0} Hektar',
             ),
-            'area-square-foot'         => array(
+            'area-square-foot' => array(
                 'one'   => '{0} Quadratfuß',
                 'other' => '{0} Quadratfuß',
             ),
-            'area-square-kilometer'    => array(
+            'area-square-kilometer' => array(
                 'one'   => '{0} Quadratkilometer',
                 'other' => '{0} Quadratkilometer',
             ),
-            'area-square-meter'        => array(
+            'area-square-meter' => array(
                 'one'   => '{0} Quadratmeter',
                 'other' => '{0} Quadratmeter',
             ),
-            'area-square-mile'         => array(
+            'area-square-mile' => array(
                 'one'   => '{0} Quadratmeile',
                 'other' => '{0} Quadratmeilen',
             ),
-            'duration-day'             => array(
+            'duration-day' => array(
                 'one'   => '{0} Tag',
                 'other' => '{0} Tage',
             ),
-            'duration-hour'            => array(
+            'duration-hour' => array(
                 'one'   => '{0} Stunde',
                 'other' => '{0} Stunden',
             ),
-            'duration-millisecond'     => array(
+            'duration-millisecond' => array(
                 'one'   => '{0} Millisekunde',
                 'other' => '{0} Millisekunden',
             ),
-            'duration-minute'          => array(
+            'duration-minute' => array(
                 'one'   => '{0} Minute',
                 'other' => '{0} Minuten',
             ),
-            'duration-month'           => array(
+            'duration-month' => array(
                 'one'   => '{0} Monat',
                 'other' => '{0} Monate',
             ),
-            'duration-second'          => array(
+            'duration-second' => array(
                 'one'   => '{0} Sekunde',
                 'other' => '{0} Sekunden',
             ),
-            'duration-week'            => array(
+            'duration-week' => array(
                 'one'   => '{0} Woche',
                 'other' => '{0} Wochen',
             ),
-            'duration-year'            => array(
+            'duration-year' => array(
                 'one'   => '{0} Jahr',
                 'other' => '{0} Jahre',
             ),
-            'length-centimeter'        => array(
+            'length-centimeter' => array(
                 'one'   => '{0} Zentimeter',
                 'other' => '{0} Zentimeter',
             ),
-            'length-foot'              => array(
+            'length-foot' => array(
                 'one'   => '{0} Fuß',
                 'other' => '{0} Fuß',
             ),
-            'length-inch'              => array(
+            'length-inch' => array(
                 'one'   => '{0} Zoll',
                 'other' => '{0} Zoll',
             ),
-            'length-kilometer'         => array(
+            'length-kilometer' => array(
                 'one'   => '{0} Kilometer',
                 'other' => '{0} Kilometer',
             ),
-            'length-light-year'        => array(
+            'length-light-year' => array(
                 'one'   => '{0} Lichtjahr',
                 'other' => '{0} Lichtjahre',
             ),
-            'length-meter'             => array(
+            'length-meter' => array(
                 'one'   => '{0} Meter',
                 'other' => '{0} Meter',
             ),
-            'length-mile'              => array(
+            'length-mile' => array(
                 'one'   => '{0} Meile',
                 'other' => '{0} Meilen',
             ),
-            'length-millimeter'        => array(
+            'length-millimeter' => array(
                 'one'   => '{0} Millimeter',
                 'other' => '{0} Millimeter',
             ),
-            'length-picometer'         => array(
+            'length-picometer' => array(
                 'one'   => '{0} Pikometer',
                 'other' => '{0} Pikometer',
             ),
-            'length-yard'              => array(
+            'length-yard' => array(
                 'one'   => '{0} Yard',
                 'other' => '{0} Yards',
             ),
-            'mass-gram'                => array(
+            'mass-gram' => array(
                 'one'   => '{0} Gramm',
                 'other' => '{0} Gramm',
             ),
-            'mass-kilogram'            => array(
+            'mass-kilogram' => array(
                 'one'   => '{0} Kilogramm',
                 'other' => '{0} Kilogramm',
             ),
-            'mass-ounce'               => array(
+            'mass-ounce' => array(
                 'one'   => '{0} Unze',
                 'other' => '{0} Unzen',
             ),
-            'mass-pound'               => array(
+            'mass-pound' => array(
                 'one'   => '{0} Pfund',
                 'other' => '{0} Pfund',
             ),
-            'power-horsepower'         => array(
+            'power-horsepower' => array(
                 'one'   => '{0} Pferdestärke',
                 'other' => '{0} Pferdestärken',
             ),
-            'power-kilowatt'           => array(
+            'power-kilowatt' => array(
                 'one'   => '{0} Kilowatt',
                 'other' => '{0} Kilowatt',
             ),
-            'power-watt'               => array(
+            'power-watt' => array(
                 'one'   => '{0} Watt',
                 'other' => '{0} Watt',
             ),
-            'pressure-hectopascal'     => array(
+            'pressure-hectopascal' => array(
                 'one'   => '{0} Hektopascal',
                 'other' => '{0} Hektopascal',
             ),
-            'pressure-inch-hg'         => array(
+            'pressure-inch-hg' => array(
                 'one'   => '{0} Zoll Quecksilbersäule',
                 'other' => '{0} Zoll Quecksilbersäule',
             ),
-            'pressure-millibar'        => array(
+            'pressure-millibar' => array(
                 'one'   => '{0} Millibar',
                 'other' => '{0} Millibar',
             ),
@@ -7164,31 +7168,31 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
                 'one'   => '{0} Kilometer pro Stunde',
                 'other' => '{0} Kilometer pro Stunde',
             ),
-            'speed-meter-per-second'   => array(
+            'speed-meter-per-second' => array(
                 'one'   => '{0} Meter pro Sekunde',
                 'other' => '{0} Meter pro Sekunde',
             ),
-            'speed-mile-per-hour'      => array(
+            'speed-mile-per-hour' => array(
                 'one'   => '{0} Meile pro Stunde',
                 'other' => '{0} Meilen pro Stunde',
             ),
-            'temperature-celsius'      => array(
+            'temperature-celsius' => array(
                 'one'   => '{0} Grad Celsius',
                 'other' => '{0} Grad Celsius',
             ),
-            'temperature-fahrenheit'   => array(
+            'temperature-fahrenheit' => array(
                 'one'   => '{0} Grad Fahrenheit',
                 'other' => '{0} Grad Fahrenheit',
             ),
-            'volume-cubic-kilometer'   => array(
+            'volume-cubic-kilometer' => array(
                 'one'   => '{0} Kubikkilometer',
                 'other' => '{0} Kubikkilometer',
             ),
-            'volume-cubic-mile'        => array(
+            'volume-cubic-mile' => array(
                 'one'   => '{0} Kubikmeile',
                 'other' => '{0} Kubikmeilen',
             ),
-            'volume-liter'             => array(
+            'volume-liter' => array(
                 'one'   => '{0} Liter',
                 'other' => '{0} Liter',
             ),
