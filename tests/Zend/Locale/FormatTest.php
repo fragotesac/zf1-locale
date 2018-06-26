@@ -332,7 +332,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
             // success
         }
         $this->assertInternalType('array', Zend_Locale_Format::getDate('10.10.06'));
-        $this->assertEquals(5, count(Zend_Locale_Format::getDate('10.10.06', array('date_format' => 'dd.MM.yy'))));
+        $this->assertCount(5, Zend_Locale_Format::getDate('10.10.06', array('date_format' => 'dd.MM.yy')));
 
         $value = Zend_Locale_Format::getDate('10.11.6', array('date_format' => 'dd.MM.yy'));
         $this->assertEquals(10, $value['day']);
@@ -630,7 +630,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
         $this->assertEquals(14, $value['minute']);
         $this->assertEquals(55, $value['second']);
 
-        $this->assertEquals(5, count(Zend_Locale_Format::getTime('13:14:55', array('date_format' => 'HH:mm:ss'))));
+        $this->assertCount(5, Zend_Locale_Format::getTime('13:14:55', array('date_format' => 'HH:mm:ss')));
 
         $value = Zend_Locale_Format::getTime('13:14:55', array('date_format' => 'HH:mm:ss'));
         $this->assertEquals(13, $value['hour']);
@@ -760,7 +760,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
      */
     public function testSetOption()
     {
-        $this->assertEquals(8, count(Zend_Locale_Format::setOptions(array('format_type' => 'php'))));
+        $this->assertCount(8, Zend_Locale_Format::setOptions(array('format_type' => 'php')));
         $this->assertInternalType('array', Zend_Locale_Format::setOptions());
 
         try {
@@ -1017,7 +1017,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
         $this->assertEquals(14, $value['minute']);
         $this->assertEquals(55, $value['second']);
 
-        $this->assertEquals(8, count(Zend_Locale_Format::getDateTime('15.10.09 13:14:55', array('date_format' => 'dd.MM.yy HH:mm:ss'))));
+        $this->assertCount(8, Zend_Locale_Format::getDateTime('15.10.09 13:14:55', array('date_format' => 'dd.MM.yy HH:mm:ss')));
 
         $value = Zend_Locale_Format::getDateTime('15.10.09 13:14:55', array('date_format' => 'dd.MM.yy HH:mm:ss'));
         $this->assertEquals(15, $value['day']);
