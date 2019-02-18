@@ -1303,7 +1303,7 @@ class Zend_Locale
             $match  = null;
             $result = preg_match(
                 '/^([a-z]{1,8}(?:[-_][a-z]{1,8})*)(?:;\s*q=(0(?:\.[0-9]{1,3})?|1(?:\.0{1,3})?))?$/i',
-                                 $accept,
+                $accept,
                 $match
             );
 

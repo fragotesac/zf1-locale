@@ -319,7 +319,7 @@ class Zend_Locale_Format
                         $options['precision'] = iconv_strlen(iconv_substr(
                             $format,
                             iconv_strpos($format, '.') + 1,
-                                                             iconv_strrpos($format, '0') - iconv_strpos($format, '.')
+                            iconv_strrpos($format, '0') - iconv_strpos($format, '.')
                         ));
                         $format = iconv_substr($format, 0, iconv_strpos($format, '.') + 1) . '###'
                                 . iconv_substr($format, iconv_strrpos($format, '0') + 1);
@@ -853,8 +853,8 @@ class Zend_Locale_Format
                 // prepare to convert month name to their numeric equivalents, if requested,
                 // and we have a $options['locale']
                 $position = self::_replaceMonth($number, Zend_Locale_Data::getList(
-                        $options['locale'],
-                        'month'
+                    $options['locale'],
+                    'month'
                     ));
                 if ($position === false) {
                     $position = self::_replaceMonth($number, Zend_Locale_Data::getList(
