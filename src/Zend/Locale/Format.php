@@ -855,7 +855,7 @@ class Zend_Locale_Format
                 $position = self::_replaceMonth($number, Zend_Locale_Data::getList(
                     $options['locale'],
                     'month'
-                    ));
+                ));
                 if ($position === false) {
                     $position = self::_replaceMonth($number, Zend_Locale_Data::getList(
                         $options['locale'],
