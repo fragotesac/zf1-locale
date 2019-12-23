@@ -6,4 +6,3 @@ parameters:
         - %rootDir%/../../../tests/*
         - %rootDir%/../../../vendor/*
     ignoreErrors:
-        - '#Static method Zend_Locale_Data::clearCache\(\) invoked with 1 parameter, 0 required\.#'
