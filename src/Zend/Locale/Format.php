@@ -495,6 +495,8 @@ class Zend_Locale_Format
      */
     public static function isNumber($input, array $options = array())
     {
+        $input = (string) $input;
+
         if (!self::_getUniCodeSupport()) {
             trigger_error('Sorry, your PCRE extension does not support UTF8 which is needed for the I18N core', E_USER_NOTICE);
         }
@@ -1199,34 +1201,34 @@ class Zend_Locale_Format
         $options = self::_checkOptions($options) + self::$_options;
 
         // day expected but not parsed
-        if ((iconv_strpos($options['date_format'], 'd', 0, 'UTF-8') !== false) and (!isset($date['day']) or ($date['day'] === ''))) {
+        if ((iconv_strpos($options['date_format'], 'd', 0, 'UTF-8') !== false) && (!isset($date['day']) || $date['day'] === '' || $date['day'] === false)) {
             return false;
         }
 
         // month expected but not parsed
-        if ((iconv_strpos($options['date_format'], 'M', 0, 'UTF-8') !== false) and (!isset($date['month']) or ($date['month'] === ''))) {
+        if ((iconv_strpos($options['date_format'], 'M', 0, 'UTF-8') !== false) && (!isset($date['month']) || $date['month'] === '' || $date['month'] === false)) {
             return false;
         }
 
         // year expected but not parsed
-        if (((iconv_strpos($options['date_format'], 'Y', 0, 'UTF-8') !== false) or
-             (iconv_strpos($options['date_format'], 'y', 0, 'UTF-8') !== false)) and (!isset($date['year']) or ($date['year'] === ''))) {
+        if (((iconv_strpos($options['date_format'], 'Y', 0, 'UTF-8') !== false) ||
+             (iconv_strpos($options['date_format'], 'y', 0, 'UTF-8') !== false)) && (!isset($date['year']) || $date['year'] === '' || $date['year'] === false)) {
             return false;
         }
 
         // second expected but not parsed
-        if ((iconv_strpos($options['date_format'], 's', 0, 'UTF-8') !== false) and (!isset($date['second']) or ($date['second'] === ''))) {
+        if ((iconv_strpos($options['date_format'], 's', 0, 'UTF-8') !== false) && (!isset($date['second']) || $date['second'] === '' || $date['second'] === false)) {
             return false;
         }
 
         // minute expected but not parsed
-        if ((iconv_strpos($options['date_format'], 'm', 0, 'UTF-8') !== false) and (!isset($date['minute']) or ($date['minute'] === ''))) {
+        if ((iconv_strpos($options['date_format'], 'm', 0, 'UTF-8') !== false) && (!isset($date['minute']) || $date['minute'] === '' || $date['minute'] === false)) {
             return false;
         }
 
         // hour expected but not parsed
-        if (((iconv_strpos($options['date_format'], 'H', 0, 'UTF-8') !== false) or
-             (iconv_strpos($options['date_format'], 'h', 0, 'UTF-8') !== false)) and (!isset($date['hour']) or ($date['hour'] === ''))) {
+        if (((iconv_strpos($options['date_format'], 'H', 0, 'UTF-8') !== false) ||
+             (iconv_strpos($options['date_format'], 'h', 0, 'UTF-8') !== false)) && (!isset($date['hour']) || $date['hour'] === '' || $date['hour'] === false)) {
             return false;
         }
 

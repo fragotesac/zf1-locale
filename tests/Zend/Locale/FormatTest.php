@@ -31,7 +31,7 @@
  */
 class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         if (defined('TESTS_ZEND_LOCALE_FORMAT_SETLOCALE') && TESTS_ZEND_LOCALE_FORMAT_SETLOCALE) {
             // run all tests in a special locale
@@ -42,7 +42,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
     /**
      * teardown / cleanup
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         // if the setlocale option is enabled, then don't change the setlocale below
         if (defined('TESTS_ZEND_LOCALE_FORMAT_SETLOCALE') && TESTS_ZEND_LOCALE_FORMAT_SETLOCALE === false) {
@@ -331,7 +331,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
         } catch (Zend_Locale_Exception $e) {
             // success
         }
-        $this->assertInternalType('array', Zend_Locale_Format::getDate('10.10.06'));
+        $this->assertIsArray(Zend_Locale_Format::getDate('10.10.06'));
         $this->assertCount(5, Zend_Locale_Format::getDate('10.10.06', array('date_format' => 'dd.MM.yy')));
 
         $value = Zend_Locale_Format::getDate('10.11.6', array('date_format' => 'dd.MM.yy'));
@@ -577,7 +577,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
         $this->assertEquals(11, $value['month']);
         $this->assertEquals(2006, $value['year']);
 
-        $this->assertInternalType('array', Zend_Locale_Format::getTime('13:14:55', array('date_format' => 'HH:mm:ss')));
+        $this->assertIsArray(Zend_Locale_Format::getTime('13:14:55', array('date_format' => 'HH:mm:ss')));
         Zend_Locale_Format::setOptions(array('format_type' => 'iso'));
 
         $value = Zend_Locale_Format::getDate('2006 Nov. 10', array('locale' => 'de_AT', 'fix_date' => true));
@@ -604,12 +604,12 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
             // success
         }
 
-        $this->assertInternalType('array', Zend_Locale_Format::getTime('13:14:55', array('date_format' => 'HH:mm:ss')));
+        $this->assertIsArray(Zend_Locale_Format::getTime('13:14:55', array('date_format' => 'HH:mm:ss')));
         $options = array('date_format' => 'h:mm:ss a', 'locale' => 'en');
-        $this->assertInternalType('array', Zend_Locale_Format::getTime('11:14:55 am', $options));
-        $this->assertInternalType('array', Zend_Locale_Format::getTime('12:14:55 am', $options));
-        $this->assertInternalType('array', Zend_Locale_Format::getTime('11:14:55 pm', $options));
-        $this->assertInternalType('array', Zend_Locale_Format::getTime('12:14:55 pm', $options));
+        $this->assertIsArray(Zend_Locale_Format::getTime('11:14:55 am', $options));
+        $this->assertIsArray(Zend_Locale_Format::getTime('12:14:55 am', $options));
+        $this->assertIsArray(Zend_Locale_Format::getTime('11:14:55 pm', $options));
+        $this->assertIsArray(Zend_Locale_Format::getTime('12:14:55 pm', $options));
 
         try {
             $value = Zend_Locale_Format::getTime('13:14:55', array('date_format' => 'nocontent'));
@@ -658,7 +658,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
 
         $this->assertFalse(Zend_Locale_Format::checkDateFormat('20.April', array('date_format' => 'dd.MMMM.YYYY')));
         $this->assertTrue(Zend_Locale_Format::checkDateFormat('20.April', array('date_format' => 'MMMM.YYYY'   )));
-        $this->assertTrue(Zend_Locale_Format::checkDateFormat('20', array('date_format' => 'dd.MMMM.YYYY')));
+        $this->assertFalse(Zend_Locale_Format::checkDateFormat('20', array('date_format' => 'dd.MMMM.YYYY')));
         $this->assertTrue(Zend_Locale_Format::checkDateFormat('April.2007', array('date_format' => 'MMMM.YYYY'   )));
         $this->assertTrue(Zend_Locale_Format::checkDateFormat('20.April.2007', array('date_format' => 'dd.YYYY'     )));
 
@@ -679,7 +679,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
         $this->assertTrue(Zend_Locale_Format::checkDateFormat('11:10:55 am', array('date_format' => 'HH:mm:ss', 'locale' => 'ar_EG')));
         $this->assertFalse(Zend_Locale_Format::checkDateFormat('notime'));
         $this->assertFalse(Zend_Locale_Format::checkDateFormat('13:10', array('date_format' => 'HH:mm:ss', 'locale' => 'de_AT')));
-        $this->assertTrue(Zend_Locale_Format::checkDateFormat('13', array('date_format' => 'HH:mm',    'locale' => 'de_AT')));
+        $this->assertFalse(Zend_Locale_Format::checkDateFormat('13', array('date_format' => 'HH:mm',    'locale' => 'de_AT')));
         $this->assertFalse(Zend_Locale_Format::checkDateFormat('00:13', array('date_format' => 'ss:mm:HH', 'locale' => 'de_AT')));
     }
 
@@ -761,7 +761,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
     public function testSetOption()
     {
         $this->assertCount(8, Zend_Locale_Format::setOptions(array('format_type' => 'php')));
-        $this->assertInternalType('array', Zend_Locale_Format::setOptions());
+        $this->assertIsArray(Zend_Locale_Format::setOptions());
 
         try {
             $this->assertTrue(Zend_Locale_Format::setOptions(array('format_type' => 'xxx')));
@@ -798,7 +798,7 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
             // success
         }
         try {
-            $this->assertNotInternalType('array', Zend_Locale_Format::setOptions(array('fix_date' => 'no')));
+            $this->assertIsNotArray(Zend_Locale_Format::setOptions(array('fix_date' => 'no')));
             $this->fail('exception expected');
         } catch (Zend_Locale_Exception $e) {
             // success
@@ -809,13 +809,13 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
         $this->assertEquals($locale->toString(), $format['locale']);
 
         try {
-            $this->assertNotInternalType('array', Zend_Locale_Format::setOptions(array('locale' => 'nolocale')));
+            $this->assertIsNotArray(Zend_Locale_Format::setOptions(array('locale' => 'nolocale')));
             $this->fail('exception expected');
         } catch (Zend_Locale_Exception $e) {
             // success
         }
         try {
-            $this->assertNotInternalType('array', Zend_Locale_Format::setOptions(array('precision' => 50)));
+            $this->assertIsNotArray(Zend_Locale_Format::setOptions(array('precision' => 50)));
             $this->fail('exception expected');
         } catch (Zend_Locale_Exception $e) {
             // success
@@ -988,12 +988,12 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
             // success
         }
 
-        $this->assertInternalType('array', Zend_Locale_Format::getDateTime('10.11.2006 13:14:55', array('date_format' => 'dd.MM.yyyy HH:mm:ss')));
+        $this->assertIsArray(Zend_Locale_Format::getDateTime('10.11.2006 13:14:55', array('date_format' => 'dd.MM.yyyy HH:mm:ss')));
         $options = array('date_format' => 'dd.MM.yy h:mm:ss a', 'locale' => 'en');
-        $this->assertInternalType('array', Zend_Locale_Format::getDateTime('15.10.09 11:14:55 am', $options));
-        $this->assertInternalType('array', Zend_Locale_Format::getDateTime('15.10.09 12:14:55 am', $options));
-        $this->assertInternalType('array', Zend_Locale_Format::getDateTime('15.10.09 11:14:55 pm', $options));
-        $this->assertInternalType('array', Zend_Locale_Format::getDateTime('15.10.09 12:14:55 pm', $options));
+        $this->assertIsArray(Zend_Locale_Format::getDateTime('15.10.09 11:14:55 am', $options));
+        $this->assertIsArray(Zend_Locale_Format::getDateTime('15.10.09 12:14:55 am', $options));
+        $this->assertIsArray(Zend_Locale_Format::getDateTime('15.10.09 11:14:55 pm', $options));
+        $this->assertIsArray(Zend_Locale_Format::getDateTime('15.10.09 12:14:55 pm', $options));
 
         try {
             $value = Zend_Locale_Format::getDateTime('15.10.09 13:14:55', array('date_format' => 'nocontent'));

@@ -33,7 +33,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
 {
     private $_cache = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         if (defined('TESTS_ZEND_LOCALE_FORMAT_SETLOCALE') && TESTS_ZEND_LOCALE_FORMAT_SETLOCALE) {
             // run all tests in a special locale
@@ -50,7 +50,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     }
 
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->_cache->clean(Zend_Cache::CLEANING_MODE_ALL);
     }
@@ -70,7 +70,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
      */
     public function testNoLocale()
     {
-        $this->assertInternalType('array', Zend_Locale_Data::getList(null, 'language'));
+        $this->assertIsArray(Zend_Locale_Data::getList(null, 'language'));
 
         try {
             $value = Zend_Locale_Data::getList('nolocale', 'language');
@@ -80,7 +80,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
         }
 
         $locale = new Zend_Locale('de');
-        $this->assertInternalType('array', Zend_Locale_Data::getList($locale, 'language'));
+        $this->assertIsArray(Zend_Locale_Data::getList($locale, 'language'));
     }
 
 
@@ -7209,7 +7209,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testGetListNonexistentTypeReturnsEmptyArray()
     {
         $result = Zend_Locale_Data::getList('de_AT', 'type', 'ddd');
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 
@@ -7219,7 +7219,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testGetListValidTypeReturnsNonemptyArray()
     {
         $result = Zend_Locale_Data::getList('de_AT', 'type', 'calendar');
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertTrue(count($result) > 0);
     }
 
@@ -7229,7 +7229,7 @@ class Zend_Locale_DataTest extends PHPUnit\Framework\TestCase
     public function testGetListEmptyTypeReturnsNonemptyArray()
     {
         $result = Zend_Locale_Data::getList('de_AT', 'type', '');
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertTrue(count($result) > 0);
     }
 
