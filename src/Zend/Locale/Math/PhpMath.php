@@ -187,12 +187,12 @@ class Zend_Locale_Math_PhpMath extends Zend_Locale_Math
             return null;
         }
         $op1 = self::normalize($op1);
-        $op2 = self::normalize($op2);
-        if ((int)$op2 == 0) {
+        $op2 = (int) self::normalize($op2);
+        if ($op2 == 0) {
             return null;
         }
-        $result = $op1 % $op2;
-        if (is_nan($result) or (($op1 - $result) % $op2 != 0)) {
+        $result = (int) $op1 % $op2;
+        if (is_nan($result) or ((int) ($op1 - $result) % $op2 != 0)) {
             throw new Zend_Locale_Math_Exception("modulus calculation error: $op1 % $op2 != $result", $op1, $op2, $result);
         }
 

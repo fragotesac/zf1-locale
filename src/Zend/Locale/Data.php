@@ -294,8 +294,8 @@ class Zend_Locale_Data
      * Read the LDML file, get a array of multipath defined value
      *
      * @param  string      $locale
-     * @param  string      $path
-     * @param  bool|string|array|int $value
+     * @param  string|null      $path
+     * @param  bool|string|array|int|null $value
      * @return array
      * @throws Zend_Locale_Exception
      */
@@ -317,14 +317,14 @@ class Zend_Locale_Data
             $val = implode('_', $value);
         }
 
-        $val = urlencode($val);
+        $val = urlencode($val ?? '');
         $id  = self::_filterCacheId('Zend_LocaleL_' . $locale . '_' . $path . '_' . $val);
         if (!self::$_cacheDisabled && ($result = self::$_cache->load($id))) {
             return unserialize($result);
         }
 
         $temp = array();
-        switch (strtolower($path)) {
+        switch (strtolower($path ?? '')) {
             case 'language':
                 $temp = self::_getFile($locale, '/ldml/localeDisplayNames/languages/language', 'type');
                 break;
@@ -943,7 +943,7 @@ class Zend_Locale_Data
      * Read the LDML file, get a single path defined value
      *
      * @param  string      $locale
-     * @param  string      $path
+     * @param  string|null      $path
      * @param  bool|string|array $value
      * @return string
      * @throws Zend_Locale_Exception
@@ -965,13 +965,13 @@ class Zend_Locale_Data
         if (is_array($value)) {
             $val = implode('_', $value);
         }
-        $val = urlencode($val);
+        $val = urlencode((string) $val);
         $id  = self::_filterCacheId('Zend_LocaleC_' . $locale . '_' . $path . '_' . $val);
         if (!self::$_cacheDisabled && ($result = self::$_cache->load($id))) {
             return unserialize($result);
         }
 
-        switch (strtolower($path)) {
+        switch (strtolower($path ?? '')) {
             case 'language':
                 $temp = self::_getFile($locale, '/ldml/localeDisplayNames/languages/language[@type=\'' . $value . '\']', 'type');
                 break;

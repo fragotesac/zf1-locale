@@ -241,7 +241,7 @@ class Zend_Locale_Math
         $op1 = self::exponent($op1, $scale);
         $op2 = self::exponent($op2, $scale);
 
-        return bcadd($op1, $op2, abs($scale));
+        return bcadd((string) $op1, (string) $op2, abs($scale ?? 0));
     }
 
     /**
@@ -256,7 +256,7 @@ class Zend_Locale_Math
     {
         $op1 = self::exponent($op1, $scale);
         $op2 = self::exponent($op2, $scale);
-        return bcsub($op1, $op2, abs($scale));
+        return bcsub((string) $op1, (string) $op2, abs($scale ?? 0));
     }
 
     /**
