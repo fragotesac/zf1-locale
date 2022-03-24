@@ -121,7 +121,7 @@ class Zend_LocaleTest extends PHPUnit\Framework\TestCase
         $this->assertTrue(new Zend_LocaleTestHelper('root') instanceof Zend_Locale);
         try {
             $locale = new Zend_LocaleTestHelper(Zend_Locale::ENVIRONMENT);
-            $this->assertTrue($locale instanceof Zend_Locale);
+            $this->assertInstanceOf(Zend_Locale::class, $locale);
         } catch (Zend_Locale_Exception $e) {
             // ignore environments where the locale can not be detected
             $this->assertStringContainsString('Autodetection', $e->getMessage());
@@ -720,7 +720,7 @@ class Zend_LocaleTest extends PHPUnit\Framework\TestCase
         try {
             Zend_LocaleTestHelper::setDefault('de_XX');
             $locale = new Zend_LocaleTestHelper();
-            $this->assertTrue($locale instanceof Zend_Locale); // should defer to 'de' or any other standard locale
+            $this->assertInstanceOf(Zend_Locale::class, $locale); // should defer to 'de' or any other standard locale
         } catch (Zend_Locale_Exception $e) {
             $this->fail(); // de_XX should automatically degrade to 'de'
         }
@@ -742,7 +742,7 @@ class Zend_LocaleTest extends PHPUnit\Framework\TestCase
         try {
             Zend_LocaleTestHelper::setDefault('de', 90);
             $locale = new Zend_LocaleTestHelper();
-            $this->assertTrue($locale instanceof Zend_Locale); // should defer to 'de' or any other standard locale
+            $this->assertInstanceOf(Zend_Locale::class, $locale); // should defer to 'de' or any other standard locale
         } catch (Zend_Locale_Exception $e) {
             $this->fail();
         }
@@ -750,7 +750,7 @@ class Zend_LocaleTest extends PHPUnit\Framework\TestCase
         try {
             Zend_LocaleTestHelper::setDefault('de-AT', 90);
             $locale = new Zend_LocaleTestHelper();
-            $this->assertTrue($locale instanceof Zend_Locale);
+            $this->assertInstanceOf(Zend_Locale::class, $locale);
         } catch (Zend_Locale_Exception $e) {
             $this->fail();
         }
@@ -777,7 +777,7 @@ class Zend_LocaleTest extends PHPUnit\Framework\TestCase
     public function testCaching()
     {
         $cache = Zend_LocaleTestHelper::getCache();
-        $this->assertTrue($cache instanceof Zend_Cache_Core);
+        $this->assertInstanceOf(Zend_Cache_Core::class, $cache);
         $this->assertTrue(Zend_LocaleTestHelper::hasCache());
 
         Zend_LocaleTestHelper::clearCache();
