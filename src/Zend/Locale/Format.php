@@ -161,7 +161,6 @@ class Zend_Locale_Format
                 default:
                     throw new Zend_Locale_Exception("Unknown option: '$name' = '$value'");
                     break;
-
             }
         }
 
@@ -431,7 +430,6 @@ class Zend_Locale_Format
             }
             $format = iconv_substr($format, 0, iconv_strpos($format, '#')) . $number . iconv_substr($format, $point);
         } else {
-
             // 2 seperations
             if (iconv_strlen($number) > ($point - $group)) {
                 $seperation = ($point - $group);
