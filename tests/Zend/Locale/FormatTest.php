@@ -49,8 +49,8 @@ class Zend_Locale_FormatTest extends PHPUnit\Framework\TestCase
             // I'm anticipating possible platform inconsistencies, so I'm leaving some debug comments for now.
             //echo '<<<', setlocale(LC_NUMERIC, '0'); // show locale before changing
             setlocale(LC_ALL, 'C'); // attempt to restore global setting i.e. test teardown
-            //echo '>>>', setlocale(LC_NUMERIC, '0'); // show locale after changing
-            //echo "\n";
+        //echo '>>>', setlocale(LC_NUMERIC, '0'); // show locale after changing
+        //echo "\n";
         } elseif (defined('TESTS_ZEND_LOCALE_FORMAT_SETLOCALE')) {
             setlocale(LC_ALL, TESTS_ZEND_LOCALE_FORMAT_SETLOCALE);
         }
