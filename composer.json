@@ -12,10 +12,10 @@
     "require": {
         "ext-iconv": "*",
         "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0",
-        "diablomedia/zendframework1-exception": "^1.1.1",
-        "diablomedia/zendframework1-registry": "^1.0.5",
-        "diablomedia/zendframework1-xml": "^1.0.5",
-        "diablomedia/zendframework1-cache": "^1.0.6"
+        "fragotesac/zf1-exception": "^1.1.1",
+        "fragotesac/zf1-registry": "^1.0.5",
+        "fragotesac/zf1-xml": "^1.0.5",
+        "fragotesac/zf1-cache": "^1.0.6"
     },
     "autoload": {
         "psr-0": {
